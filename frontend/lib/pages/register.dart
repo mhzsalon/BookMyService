@@ -74,7 +74,7 @@ class _RegisterState extends State<Register> {
                             },
                             elevation: currentTab == 0 ? 2 : 0,
                             color: currentTab == 0
-                                ? new Color(0xffF5591F)
+                                ? Color(0xffF2861E)
                                 : Colors.grey[200],
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50)),
@@ -97,7 +97,7 @@ class _RegisterState extends State<Register> {
                             },
                             elevation: currentTab == 1 ? 2 : 0,
                             color: currentTab == 1
-                                ? new Color(0xffF5591F)
+                                ? Color(0xffF2861E)
                                 : Colors.grey[200],
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50)),

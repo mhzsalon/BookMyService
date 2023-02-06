@@ -271,7 +271,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
                         borderRadius: BorderRadius.circular(10)),
                     focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: new Color(0xffF5591F),
+                          color: Color(0xffF2861E),
                         ),
                         borderRadius: BorderRadius.circular(10)),
                     fillColor: Colors.grey[200],
@@ -314,7 +314,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50)),
                   foregroundColor: Colors.white,
-                  backgroundColor: Color(0xffF5591F),
+                  backgroundColor: Color(0xffF2861E),
                   minimumSize: Size(320, 53)),
               onPressed: () {},
               child: Text(
@@ -338,7 +338,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
                   },
                   child: Text(
                     " Login",
-                    style: TextStyle(color: new Color(0xffF5591F)),
+                    style: TextStyle(color: Color(0xffF2861E)),
                   ),
                 )
               ],

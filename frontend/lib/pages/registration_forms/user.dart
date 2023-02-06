@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/login.dart';
+import 'package:frontend/pages/notification.dart';
+import 'package:frontend/pages/sp_profile.dart';
+import 'package:frontend/pages/user_profile.dart';
 
 class User extends StatefulWidget {
   const User({super.key});
@@ -244,9 +247,12 @@ class _UserState extends State<User> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50)),
                   foregroundColor: Colors.white,
-                  backgroundColor: Color(0xffF5591F),
+                  backgroundColor: Color(0xffF2861E),
                   minimumSize: Size(320, 53)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SP_profile()));
+              },
               child: Text(
                 "Register",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
@@ -268,12 +274,12 @@ class _UserState extends State<User> {
                   },
                   child: Text(
                     " Login",
-                    style: TextStyle(color: new Color(0xffF5591F)),
+                    style: TextStyle(color: Color(0xffF2861E)),
                   ),
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
     );

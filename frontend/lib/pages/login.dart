@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10)),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: new Color(0xffF5591F),
+                            color: new Color(0xffF2861E),
                           ),
                           borderRadius: BorderRadius.circular(10)),
                       fillColor: Colors.grey[200],
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10)),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: new Color(0xffF5591F),
+                            color: Color(0xffF2861E),
                           ),
                           borderRadius: BorderRadius.circular(10)),
                       fillColor: Colors.grey[200],
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(
                   "Forgot Password?",
                   style: TextStyle(
-                    color: new Color(0xffF5591F),
+                    color: Color(0xffF2861E),
                   ),
                 ),
                 onTap: () {},
@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50)),
                     foregroundColor: Colors.white,
-                    backgroundColor: Color(0xffF5591F),
+                    backgroundColor: Color(0xffF2861E),
                     minimumSize: Size(320, 55)),
                 onPressed: () {},
                 child: Text(
@@ -152,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: Text(
                       " Register",
-                      style: TextStyle(color: new Color(0xffF5591F)),
+                      style: TextStyle(color: Color(0xffF2861E)),
                     ),
                   )
                 ],
