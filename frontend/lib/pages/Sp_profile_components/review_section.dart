@@ -17,7 +17,7 @@ class _reviewSectionState extends State<reviewSection> {
 
       height: 400,
       decoration: BoxDecoration(
-          color: new Color(0xffF4F0F0),
+          color: Color.fromARGB(203, 255, 255, 255),
           // gradient: LinearGradient(
           //     colors: [(new Color(0xffF5591F)), (new Color(0xffF2861E))],
           //     begin: Alignment.topCenter,
@@ -125,7 +125,7 @@ class _reviewSectionState extends State<reviewSection> {
                   ),
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.white,
+                        color: Color(0xffEEF1F9),
                       ),
                       borderRadius: BorderRadius.circular(10)),
                   focusedBorder: OutlineInputBorder(
@@ -133,7 +133,7 @@ class _reviewSectionState extends State<reviewSection> {
                         color: new Color(0xffF5591F),
                       ),
                       borderRadius: BorderRadius.circular(10)),
-                  fillColor: Colors.white,
+                  fillColor: Color.fromARGB(160, 238, 237, 237),
                   filled: true),
             ),
           ),

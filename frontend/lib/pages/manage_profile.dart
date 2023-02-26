@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/notification.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -13,19 +14,17 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 62,
-        backgroundColor: Color(0xffF2861E),
+        toolbarHeight: 68,
         title: Padding(
-          padding: const EdgeInsets.only(left: 100),
+          padding: const EdgeInsets.only(left: 69, top: 4),
           child: Text(
-            "Profile",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-            ),
+            "Manage Profile",
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
+        backgroundColor: Color(0xffFBFBFB),
+        foregroundColor: Color(0xffF2861E),
+        elevation: 0,
       ),
       body: Column(children: <Widget>[
         Container(
@@ -107,14 +106,14 @@ class _ProfileState extends State<Profile> {
                 width: 30,
               ),
               Icon(
-                Icons.settings,
+                Icons.key,
                 color: Colors.black54,
               ),
               SizedBox(
                 width: 15,
               ),
               Text(
-                "Settings",
+                "Change Password",
                 style: TextStyle(
                     color: Colors.black54,
                     fontSize: 17,
@@ -125,36 +124,6 @@ class _ProfileState extends State<Profile> {
         ),
 
         // Notification
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            margin: EdgeInsets.only(top: 15, left: 35, right: 35),
-            height: 55,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Color.fromARGB(160, 238, 237, 237),
-            ),
-            child: Row(children: const <Widget>[
-              SizedBox(
-                width: 30,
-              ),
-              Icon(
-                Icons.notifications,
-                color: Colors.black54,
-              ),
-              SizedBox(
-                width: 15,
-              ),
-              Text(
-                "Notifications",
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500),
-              ),
-            ]),
-          ),
-        ),
 
         //Active
         Container(
@@ -199,7 +168,9 @@ class _ProfileState extends State<Profile> {
 
         // logout
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            
+          },
           child: Container(
             margin: EdgeInsets.only(top: 15, left: 35, right: 35),
             height: 55,

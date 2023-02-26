@@ -11,7 +11,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xffEEF1F9),
       appBar: AppBar(
         toolbarHeight: 68,
         title: Padding(
@@ -21,7 +21,7 @@ class _NotificationPageState extends State<NotificationPage> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xffEEF1F9),
         foregroundColor: Color(0xffF2861E),
         elevation: 0,
       ),
@@ -34,7 +34,7 @@ class _NotificationPageState extends State<NotificationPage> {
             width: 450,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Color.fromARGB(160, 238, 237, 237),
+              color: Color.fromARGB(203, 255, 255, 255),
             ),
             child: Column(
               children: <Widget>[

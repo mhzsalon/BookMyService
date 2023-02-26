@@ -20,7 +20,7 @@ class _SP_profileState extends State<SP_profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xffEEF1F9),
       appBar: AppBar(
         toolbarHeight: 68,
         title: Padding(
@@ -31,7 +31,7 @@ class _SP_profileState extends State<SP_profile> {
                 fontWeight: FontWeight.bold, color: Color(0xff3C3A3A)),
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xffEEF1F9),
         foregroundColor: Color(0xffF2861E),
         elevation: 0,
       ),
@@ -133,8 +133,9 @@ class _SP_profileState extends State<SP_profile> {
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        color:
-                            currentTab == 0 ? Color(0xffF2861E) : Colors.white,
+                        color: currentTab == 0
+                            ? Color(0xffF2861E)
+                            : Color(0xffEEF1F9),
                         width: 6.0,
                       ),
                     ),
@@ -169,8 +170,9 @@ class _SP_profileState extends State<SP_profile> {
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        color:
-                            currentTab == 1 ? Color(0xffF2861E) : Colors.white,
+                        color: currentTab == 1
+                            ? Color(0xffF2861E)
+                            : Color(0xffEEF1F9),
                         width: 6.0,
                       ),
                     ),

@@ -1,7 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/API/CallAPI.dart';
+import 'package:frontend/pages/home.dart';
+import 'package:frontend/pages/landing_page.dart';
+import 'package:frontend/pages/login/loginUser.dart';
 import 'package:frontend/pages/register.dart';
+import 'package:http/http.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +19,44 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  fetchData() async {
+    try {
+      Response response = await post(
+        Uri.parse("http://10.0.2.2:8000/api/login/"),
+        body: {
+          'email': emailController.text.toString(),
+          'password': passwordController.text.toString(),
+        },
+      );
+      var loginDetail = jsonDecode(response.body.toString());
+      print(loginDetail);
+
+      if (response.statusCode == 200) {
+        if (loginDetail['user_type'] == 'Clients') {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LandingPage()));
+        } else if (loginDetail['user_type'] == 'Service Provider') {
+          print('Welcome Service Provider');
+        }
+      } else {
+        print(
+          loginDetail["message"],
+        );
+      }
+    } catch (e) {
+      print("Error is $e");
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +105,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Padding(
                 padding: EdgeInsets.only(left: 10, right: 10),
                 child: TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                       hintText: "Email",
                       enabledBorder: OutlineInputBorder(
@@ -84,19 +131,22 @@ class _LoginPageState extends State<LoginPage> {
               child: Padding(
                 padding: EdgeInsets.only(left: 10, right: 10),
                 child: TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                       hintText: "Password",
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade200,
-                          ),
-                          borderRadius: BorderRadius.circular(10)),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade200,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffF2861E),
-                          ),
-                          borderRadius: BorderRadius.circular(10)),
+                        borderSide: BorderSide(
+                          color: Color(0xffF2861E),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       fillColor: Colors.grey[200],
                       filled: true),
                 ),
@@ -130,7 +180,9 @@ class _LoginPageState extends State<LoginPage> {
                     foregroundColor: Colors.white,
                     backgroundColor: Color(0xffF2861E),
                     minimumSize: Size(320, 55)),
-                onPressed: () {},
+                onPressed: () {
+                  fetchData();
+                },
                 child: Text(
                   "LOGIN",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),

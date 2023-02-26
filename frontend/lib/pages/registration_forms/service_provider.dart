@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/login.dart';
+import 'package:frontend/pages/login/login.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 class ServiceProvider extends StatefulWidget {
   const ServiceProvider({super.key});
@@ -9,7 +11,46 @@ class ServiceProvider extends StatefulWidget {
 }
 
 class _ServiceProviderState extends State<ServiceProvider> {
-  String dropdownvalue = 'Male';
+  String? dropdownvalue;
+  String? serviceValue;
+  TextEditingController _spEmailController = new TextEditingController();
+  TextEditingController _spPasswordController = new TextEditingController();
+  TextEditingController _spNameController = new TextEditingController();
+  TextEditingController _spLocationController = new TextEditingController();
+
+  TextEditingController _spPhoneController = new TextEditingController();
+  TextEditingController _priceController = new TextEditingController();
+
+  spRegistration() async {
+    try {
+      Response response = await post(
+        Uri.parse("http://10.0.2.2:8000/api/register/"),
+        body: {
+          'email': _spEmailController.text.toString(),
+          'password': _spPasswordController.text.toString(),
+          'location': _spLocationController.text.toString(),
+          'phone': "+977 " + _spPhoneController.text.toString(),
+          'name': _spNameController.text.toString(),
+          'gender': dropdownvalue.toString(),
+          'user_type': 'Service Provider',
+          'price': _priceController.text.toString(),
+          'service': serviceValue.toString(),
+        },
+      );
+      var registerDetail = jsonDecode(response.body.toString());
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      } else {
+        print(
+          registerDetail["message"],
+        );
+      }
+    } catch (e) {
+      print("Error is $e");
+    }
+  }
 
   // List of items in our dropdown menu
   var items = [
@@ -17,6 +58,16 @@ class _ServiceProviderState extends State<ServiceProvider> {
     'Female',
     'Other',
   ];
+  var serviceList = [
+    'Cleaner',
+    'Carpenter',
+    'Babysitter',
+    'Painter',
+    'Electrician',
+    'Elderly care',
+    'Plumber',
+  ];
+
   bool? isChecked = false;
 
   @override
@@ -33,6 +84,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
             child: Padding(
               padding: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
+                controller: _spNameController,
                 decoration: InputDecoration(
                     hintText: "Full name",
                     hintStyle: TextStyle(
@@ -62,6 +114,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
             child: Padding(
               padding: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
+                controller: _spEmailController,
                 decoration: InputDecoration(
                     hintText: "Email",
                     hintStyle: TextStyle(
@@ -98,12 +151,14 @@ class _ServiceProviderState extends State<ServiceProvider> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[200]),
                     child: DropdownButton(
+                      underline: SizedBox(),
+                      value: dropdownvalue,
                       // Down Arrow Icon
                       icon: const Icon(Icons.keyboard_arrow_down),
-                      items: items.map((String items) {
+                      items: items.map((item) {
                         return DropdownMenuItem(
-                          value: items,
-                          child: Text(items),
+                          value: item,
+                          child: Text(item),
                         );
                       }).toList(),
 
@@ -125,6 +180,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: TextField(
+                        controller: _spPhoneController,
                         decoration: InputDecoration(
                             hintText: "Phone number",
                             hintStyle: TextStyle(
@@ -165,25 +221,24 @@ class _ServiceProviderState extends State<ServiceProvider> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[200]),
                     child: DropdownButton(
-                      hint: Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Text("Select service"),
-                      ),
-
+                      underline: SizedBox(),
+                      value: serviceValue,
                       // Down Arrow Icon
                       icon: const Icon(Icons.keyboard_arrow_down),
-                      items: items.map((String items) {
+                      items: serviceList.map((item) {
                         return DropdownMenuItem(
-                          value: items,
-                          child: Text(items),
+                          value: item,
+                          child: Text(item),
                         );
                       }).toList(),
 
                       onChanged: (String? newValue) {
                         setState(() {
-                          dropdownvalue = newValue!;
+                          serviceValue = newValue!;
+                          print(serviceValue);
                         });
                       },
+                      hint: Text("Select Service"),
                     ),
                   ),
                 ),
@@ -195,6 +250,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 10),
                       child: TextField(
+                        controller: _priceController,
                         decoration: InputDecoration(
                             hintText: "Price",
                             hintStyle: TextStyle(
@@ -229,6 +285,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
               padding: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
                 obscureText: true,
+                controller: _spPasswordController,
                 decoration: InputDecoration(
                     hintText: "Password",
                     hintStyle: TextStyle(
@@ -316,7 +373,9 @@ class _ServiceProviderState extends State<ServiceProvider> {
                   foregroundColor: Colors.white,
                   backgroundColor: Color(0xffF2861E),
                   minimumSize: Size(320, 53)),
-              onPressed: () {},
+              onPressed: () {
+                spRegistration();
+              },
               child: Text(
                 "Register",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),

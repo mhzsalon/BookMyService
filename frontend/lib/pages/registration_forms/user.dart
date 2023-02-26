@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/login.dart';
+import 'package:frontend/pages/confirm_booking.dart';
+import 'package:frontend/pages/login/login.dart';
+import 'package:frontend/pages/login/loginUser.dart';
 import 'package:frontend/pages/notification.dart';
+import 'package:frontend/pages/register.dart';
 import 'package:frontend/pages/sp_profile.dart';
-import 'package:frontend/pages/user_profile.dart';
+import 'package:frontend/pages/manage_profile.dart';
+import 'package:http/http.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'dart:convert';
 
 class User extends StatefulWidget {
   const User({super.key});
@@ -12,7 +18,44 @@ class User extends StatefulWidget {
 }
 
 class _UserState extends State<User> {
-  String dropdownvalue = 'Male';
+  String? dropdownvalue;
+
+  TextEditingController _emailController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
+  TextEditingController _nameController = new TextEditingController();
+  TextEditingController _locationController = new TextEditingController();
+
+  TextEditingController _phoneController = new TextEditingController();
+  TextEditingController _userController = new TextEditingController();
+
+  userRegistration() async {
+    try {
+      Response response = await post(
+        Uri.parse("http://10.0.2.2:8000/api/register/"),
+        body: {
+          'email': _emailController.text.toString(),
+          'password': _passwordController.text.toString(),
+          'location': _locationController.text.toString(),
+          'phone': "+977 " + _phoneController.text.toString(),
+          'name': _nameController.text.toString(),
+          'gender': dropdownvalue.toString(),
+          'user_type': 'Clients',
+        },
+      );
+      var registerDetail = jsonDecode(response.body.toString());
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      } else {
+        print(
+          registerDetail["message"],
+        );
+      }
+    } catch (e) {
+      print("Error is $e");
+    }
+  }
 
   // List of items in our dropdown menu
   var items = [
@@ -20,6 +63,7 @@ class _UserState extends State<User> {
     'Female',
     'Other',
   ];
+
   bool? isChecked = false;
 
   @override
@@ -36,6 +80,7 @@ class _UserState extends State<User> {
             child: Padding(
               padding: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
+                controller: _nameController,
                 decoration: InputDecoration(
                     hintText: "Full name",
                     hintStyle: TextStyle(
@@ -65,6 +110,7 @@ class _UserState extends State<User> {
             child: Padding(
               padding: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                     hintText: "Email",
                     hintStyle: TextStyle(
@@ -100,12 +146,14 @@ class _UserState extends State<User> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[200]),
                     child: DropdownButton(
+                      underline: SizedBox(),
+                      value: dropdownvalue,
                       // Down Arrow Icon
                       icon: const Icon(Icons.keyboard_arrow_down),
-                      items: items.map((String items) {
+                      items: items.map((item) {
                         return DropdownMenuItem(
-                          value: items,
-                          child: Text(items),
+                          value: item,
+                          child: Text(item),
                         );
                       }).toList(),
 
@@ -114,7 +162,6 @@ class _UserState extends State<User> {
                           dropdownvalue = newValue!;
                         });
                       },
-                      value: dropdownvalue,
                       hint: Text("Gender"),
                     ),
                   ),
@@ -128,6 +175,7 @@ class _UserState extends State<User> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: TextField(
+                        controller: _phoneController,
                         decoration: InputDecoration(
                             hintText: "Phone number",
                             hintStyle: TextStyle(
@@ -162,6 +210,7 @@ class _UserState extends State<User> {
               padding: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
                 obscureText: true,
+                controller: _passwordController,
                 decoration: InputDecoration(
                     hintText: "Password",
                     hintStyle: TextStyle(
@@ -250,8 +299,10 @@ class _UserState extends State<User> {
                   backgroundColor: Color(0xffF2861E),
                   minimumSize: Size(320, 53)),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SP_profile()));
+                userRegistration();
+                print("pressed");
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => SP_profile()));
               },
               child: Text(
                 "Register",
