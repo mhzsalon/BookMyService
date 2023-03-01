@@ -164,7 +164,10 @@ class _LoginPageState extends State<LoginPage> {
                     color: Color(0xffF2861E),
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LandingPage()));
+                },
               ),
             ),
 

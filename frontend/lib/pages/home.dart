@@ -18,14 +18,16 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Color(0xffEEF1F9),
       body: SafeArea(
           child: SingleChildScrollView(
-        child: Column(
-          children: [
-            top(),
-            search(),
-            OfferSlider(),
-            Categories(),
-            TrendingSP()
-          ],
+        child: Container(
+          child: Column(
+            children: [
+              top(),
+              search(),
+              OfferSlider(),
+              Categories(),
+              TrendingSP()
+            ],
+          ),
         ),
       )),
     );

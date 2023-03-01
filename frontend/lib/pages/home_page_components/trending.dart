@@ -13,7 +13,7 @@ class _TrendingSPState extends State<TrendingSP> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        top: 40,
+        top: 30,
         left: 25,
         right: 25,
       ),
