@@ -69,7 +69,7 @@ class ServiceProvider(models.Model):
 
     service = models.CharField('Service', max_length=20,
                               choices=service_type, null=False)
-    service_provider = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
+    service_provider = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     price = models.FloatField(default=0)
     booking_count = models.IntegerField(default=0)
     success = models.IntegerField(default=0)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:frontend/pages/booking.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -140,6 +141,8 @@ class _aboutSectionState extends State<aboutSection> {
             child: FloatingActionButton.extended(
               onPressed: () {
                 // Add your onPressed code here!
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => BookingScreen()));
               },
               label: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),

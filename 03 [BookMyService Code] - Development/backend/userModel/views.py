@@ -131,11 +131,12 @@ class UserRegistration(APIView):
 class getSP(APIView):
     def get(self,request):
         try:
-            print("Called")
+            # print(request.query_params.get('service'))
+            sp_details = ServiceProvider.objects.filter(service=request.query_params.get('service'))
+            # sp_details = ServiceProvider.objects.all()
 
-            sp_details = ServiceProvider.objects.filter(service='Cleaner')
 
-            print(sp_details)
+            print(request.query_params.get('service'))
            
 
             serializer = SpSerializer(sp_details, many=True)
@@ -143,6 +144,9 @@ class getSP(APIView):
 
 
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except :
-            return Response({'No service provider available.': 'Error.'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return Response({'message': 'Error!'}, status=status.HTTP_404_NOT_FOUND)
+
+ 
 

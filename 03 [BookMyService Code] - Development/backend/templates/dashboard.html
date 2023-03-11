@@ -1,0 +1,42 @@
+
+{% extends 'main.html' %}
+
+    {% block content %}
+
+    <section class="main">
+        <div class="main-top">
+            <h1>Dashboard</h1>
+            <div class="user-option">
+                <i class="fas fa-circle-user"></i>
+                <span>{{user.name}}</span>
+            </div>
+        </div>
+        
+    <div class="main-section">
+        <div class="card">
+            <h3>{{userCount}}</h3>
+            <span>Users</span>
+        </div>
+        <div class="card">
+            <h3>{{spCount}}</h3>
+            <span>Service Providers</span>
+        </div>
+        <div class="card">
+            <h3>145</h3>
+            <span>Bookings</span>
+        </div>
+
+        <div class="card">
+            <h3>145</h3>
+            <span>Bookings</span>
+        </div>
+    </div>
+    <section class="main-bottom">
+        <div class="graph-section">
+            <div class="box"></div>
+            <div class="box"></div>
+
+        </div>
+    </section>
+</section>
+    {% endblock %}

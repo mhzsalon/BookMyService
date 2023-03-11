@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/login/login.dart';
 import 'package:http/http.dart';
@@ -15,11 +16,14 @@ class _ServiceProviderState extends State<ServiceProvider> {
   String? serviceValue;
   TextEditingController _spEmailController = new TextEditingController();
   TextEditingController _spPasswordController = new TextEditingController();
+  TextEditingController _confirmPW = new TextEditingController();
   TextEditingController _spNameController = new TextEditingController();
   TextEditingController _spLocationController = new TextEditingController();
 
   TextEditingController _spPhoneController = new TextEditingController();
   TextEditingController _priceController = new TextEditingController();
+
+  bool passVerified = true;
 
   spRegistration() async {
     try {
@@ -40,8 +44,20 @@ class _ServiceProviderState extends State<ServiceProvider> {
       var registerDetail = jsonDecode(response.body.toString());
 
       if (response.statusCode == 200) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          headerAnimationLoop: false,
+          animType: AnimType.bottomSlide,
+          title: 'Success',
+          desc: 'Registration Successfull.',
+          buttonsTextStyle: const TextStyle(color: Colors.black),
+          showCloseIcon: true,
+          btnOkOnPress: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => LoginPage()));
+          },
+        ).show();
       } else {
         print(
           registerDetail["message"],
@@ -293,7 +309,9 @@ class _ServiceProviderState extends State<ServiceProvider> {
                     ),
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.grey.shade200,
+                          color: passVerified == false
+                              ? Colors.redAccent
+                              : Colors.grey.shade200,
                         ),
                         borderRadius: BorderRadius.circular(10)),
                     focusedBorder: OutlineInputBorder(
@@ -316,6 +334,7 @@ class _ServiceProviderState extends State<ServiceProvider> {
               padding: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
                 obscureText: true,
+                controller: _confirmPW,
                 decoration: InputDecoration(
                     hintText: "Confirm Password",
                     hintStyle: TextStyle(
@@ -323,7 +342,9 @@ class _ServiceProviderState extends State<ServiceProvider> {
                     ),
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.grey.shade200,
+                          color: passVerified == false
+                              ? Colors.redAccent
+                              : Colors.grey.shade200,
                         ),
                         borderRadius: BorderRadius.circular(10)),
                     focusedBorder: OutlineInputBorder(
@@ -375,6 +396,14 @@ class _ServiceProviderState extends State<ServiceProvider> {
                   minimumSize: Size(320, 53)),
               onPressed: () {
                 spRegistration();
+
+                if (_spPasswordController == _confirmPW) {
+                  print('pressed');
+                } else {
+                  setState(() {
+                    passVerified = true;
+                  });
+                }
               },
               child: Text(
                 "Register",

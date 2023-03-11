@@ -5,7 +5,9 @@ import 'package:frontend/pages/notification.dart';
 import 'package:frontend/pages/manage_profile.dart';
 
 class LandingPage extends StatefulWidget {
-  const LandingPage({super.key});
+  var userAccess;
+
+  LandingPage({super.key,  this.userAccess});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -13,14 +15,20 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   int _currentIndex = 0;
-  List<Widget> screen = [
-    HomePage(),
-    MyBooking(),
-    NotificationPage(),
-    Profile(),
-  ];
+  // String a = "${widget.userAccess}";
+  // List<Widget> screen = [
+  //   // HomePage(userType: widget.userAccess),
+  //   MyBooking(),
+  //   Profile(),
+  // ];
   @override
   Widget build(BuildContext context) {
+    //  String a = "${widget.userAccess}";
+    List<Widget> screen = [
+      HomePage(userType: widget.userAccess),
+      MyBooking(),
+      Profile(),
+    ];
     return Scaffold(
       body: screen[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -41,10 +49,6 @@ class _LandingPageState extends State<LandingPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment_outlined),
             label: 'My Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.manage_accounts),

@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+{% load static%}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'styles/mystyle.css' %}">
+    <title>Login</title>
+   
+</head>
+<body>
+    {% block content%}
+<div class="login-container">
+
+</div>
+<div class="main-container" id="blur">
+    <div class="wrapper" >
+        <div class="title-text" id="signIn">
+            <div class="title sign-in">Login</div>
+        </div>
+
+        <div class="error">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-container" id="frontface">
+            <div class="frontface" id="front">
+                <form action="" class="login" method="POST">
+          {% csrf_token %}
+
+                    <div class="field">
+                        <input type="text" placeholder="Username" name="username" id="username"required>
+                    </div>
+                    <div class="field">
+                        <input type="password" placeholder="Password" name="password" id="password" trequired>
+                    </div>
+                    <div class="link">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                    <div class="field">
+                        <input type="submit" value="Sign In">
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content%}
+    
+</body>
+</html>

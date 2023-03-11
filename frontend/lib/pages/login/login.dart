@@ -35,12 +35,12 @@ class _LoginPageState extends State<LoginPage> {
       print(loginDetail);
 
       if (response.statusCode == 200) {
-        if (loginDetail['user_type'] == 'Clients') {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LandingPage()));
-        } else if (loginDetail['user_type'] == 'Service Provider') {
-          print('Welcome Service Provider');
-        }
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LandingPage(
+                      userAccess: loginDetail['user_type'],
+                    )));
       } else {
         print(
           loginDetail["message"],
@@ -164,10 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: Color(0xffF2861E),
                   ),
                 ),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LandingPage()));
-                },
+                onTap: () {},
               ),
             ),
 

@@ -5,7 +5,8 @@ import 'package:frontend/pages/home_page_components/trending.dart';
 import 'package:frontend/pages/notification.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  var userType;
+  HomePage({super.key, this.userType});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -14,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    String type = widget.userType;
     return Scaffold(
       backgroundColor: Color(0xffEEF1F9),
       body: SafeArea(
@@ -22,10 +24,14 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               top(),
-              search(),
-              OfferSlider(),
-              Categories(),
-              TrendingSP()
+              type == "Clients"?
+              search(): Text("Welcome Service Provider"),
+              type == "Clients"?
+              OfferSlider(): Container(),
+              type == "Clients"?
+              Categories(): Container(),
+              type == "Clients"?
+              TrendingSP(): Container(),
             ],
           ),
         ),
