@@ -95,6 +95,7 @@ def addSp(request):
                 user_instance=form.save(commit=False)
                 user_instance.user_type = 'Service Provider'
                 user_instance.password = pw
+                user_instance.is_active=True
                 user_instance.save()
                 print("--------------------")
                 new_sp = ServiceProvider.objects.latest('id')
