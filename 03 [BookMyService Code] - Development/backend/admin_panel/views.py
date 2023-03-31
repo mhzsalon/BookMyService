@@ -65,6 +65,7 @@ def addUser(request):
                 user_instance=form.save(commit=False)
                 user_instance.password = pw
                 user_instance.user_type = 'Clients'
+                user_instance.is_active=True
                 user_instance.save()
                 return redirect('../user/')    
         else:
@@ -101,26 +102,30 @@ def addSp(request):
                 new_sp = ServiceProvider.objects.latest('id')
                 print(new_sp)
 
-                if sp_form.is_valid():
-                    instance = sp_form.save(commit=False)
-                    instance.service_provider = new_sp
-                    instance.save()
-                    return redirect('../service-provider')
+                # if sp_form.is_valid():
+                #     instance = sp_form.save(commit=False)
+                #     instance.service_provider = new_sp
+                #     instance.save()
+                return redirect('../service-provider')
         else:
             messages.info(request, 'Your password does not match.')
 
     userData = CustomUser.objects.filter(user_type='Service Provider')
     spData = ServiceProvider.objects.all()
-    for i in spData:
-        print(i.service_provider.email)
+   
     context = {
                'form': form,
                'sp_form': sp_form,
                'userData': userData,
                'spData': spData,
                'title': 'Service Providers'
-
-
                }
     return render(request, 'service_provider.html', context)
+
+def deleteUser(request, pk):
+    uid = CustomUser.objects.get(id=pk)
+      
+    uid.delete()
+    return redirect('user/')    
+
 

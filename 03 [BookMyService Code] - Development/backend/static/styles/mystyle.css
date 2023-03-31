@@ -209,7 +209,7 @@ tr:nth-child(odd) {
     background-color: #ffffff;
 } */
 
-td button {
+td form input {
     border: none;
     padding: 7px 20px;
     border-radius: 20px;
@@ -219,7 +219,7 @@ td button {
 
 }
 
-td button:hover{
+td form input:hover{
     opacity: 0.8;
 }
 ::-webkit-scrollbar {

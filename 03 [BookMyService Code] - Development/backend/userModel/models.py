@@ -19,7 +19,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     location = models.CharField(max_length=30, null=True, blank=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    avatar = models.ImageField(null=True)
+    avatar = models.ImageField(null=True, blank=True)
 
 
     user_type = models.CharField('User Type', max_length=20,
@@ -74,6 +74,7 @@ class ServiceProvider(models.Model):
     booking_count = models.IntegerField(default=0)
     success = models.IntegerField(default=0)
     active_status = models.BooleanField(default=True)
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.service_provider.name

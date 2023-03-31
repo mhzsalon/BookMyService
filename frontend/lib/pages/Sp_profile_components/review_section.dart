@@ -1,15 +1,50 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
 
 class reviewSection extends StatefulWidget {
-  const reviewSection({super.key});
+  var id;
+  reviewSection({super.key, this.id});
 
   @override
   State<reviewSection> createState() => _reviewSectionState();
 }
 
 class _reviewSectionState extends State<reviewSection> {
+  var _data;
+  var length;
+  var date;
+  var timeAgo;
+  getFeedback(int id) async {
+    Response _response = await get(
+      Uri.parse("http://10.0.2.2:8000/feedback/review/?spID=$id"),
+    );
+    var feedback = jsonDecode(_response.body.toString());
+
+    if (_response.statusCode == 200) {
+      setState(() {
+        _data = feedback;
+        length = _data.length;
+        date = DateFormat("HH:mm:ss").format(_data['created']);
+        timeAgo = DateTime.now().subtract(Duration(days: date));
+      });
+    }
+    print(feedback);
+    // feedback['created'];
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getFeedback(widget.id);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,13 +73,13 @@ class _reviewSectionState extends State<reviewSection> {
                 padding: EdgeInsets.only(left: 25, right: 25, top: 30),
                 height: 310,
                 child: ListView.builder(
-                  itemCount: 4,
+                  itemCount: length,
                   itemBuilder: (context, index) {
                     return Container(
                       height: 115,
                       // color: Colors.red,
                       child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Row(
                             children: <Widget>[
@@ -57,7 +92,7 @@ class _reviewSectionState extends State<reviewSection> {
                                 width: 10,
                               ),
                               Text(
-                                "user12",
+                                "user",
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                     color: Colors.black87,
@@ -70,21 +105,23 @@ class _reviewSectionState extends State<reviewSection> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type. ",
-                            style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 12,
-                                letterSpacing: 0.5),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          if (_data != null)
+                            Text(
+                              _data[index]['comment'],
+                              style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 12,
+                                  letterSpacing: 0.5),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           SizedBox(
                             height: 15,
                           ),
                           Container(
                             width: 400,
                             child: Text(
-                              "10 mins ago",
+                              // _data!=null?DateTime.now().subtract(Duration()):,
+                              _data != null ? timeAgo : '20 min ago',
                               style: TextStyle(
                                 color: Colors.black38,
                                 fontWeight: FontWeight.w500,

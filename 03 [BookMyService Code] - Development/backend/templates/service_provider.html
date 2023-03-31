@@ -22,11 +22,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>User id</th>
+                                <th>Sp id</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Gender</th>
                                 <th>Service Type</th>
                                 <th>Price</th>
                                 <th>Booking Count</th>
@@ -38,16 +37,15 @@
                         <tbody>
                             {% for sp in spData  %}
                             <tr>
-                                <td>{{spData.service_provider.id}}</td>
-                                <td>{{spData.service_provider.name}}</td>
-                                <td>{{spData.service_provider.email}}</td>
-                                <td>{{spData.service_provider.phone}}</td>
-                                <td>{{spData.service_provider.gender}}</td>
-                                <td>{{spData.service}}</td>
-                                <td>{{spData.price}}</td>
-                                <td>{{spData.booking_count}}</td>
-                                <td>{{spData.success}}</td>
-                                <td>{{spData.active_status}}</td>
+                                <td>{{sp.service_provider.id}}</td>
+                                <td>{{sp.service_provider.name}}</td>
+                                <td>{{sp.service_provider.email}}</td>
+                                <td>{{sp.service_provider.phone}}</td>
+                                <td>{{sp.service}}</td>
+                                <td>{{sp.price}}</td>
+                                <td>{{sp.booking_count}}</td>
+                                <td>{{sp.success}}</td>
+                                <td>{{sp.active_status}}</td>
                                 <td><button> Delete</button></td>
                             </tr>
                             {% endfor %}

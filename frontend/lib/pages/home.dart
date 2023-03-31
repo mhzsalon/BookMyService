@@ -1,21 +1,54 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/home_page_components/Category.dart';
 import 'package:frontend/pages/home_page_components/Offers.dart';
 import 'package:frontend/pages/home_page_components/trending.dart';
 import 'package:frontend/pages/notification.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
+import 'package:frontend/pages/sp_profile.dart';
 
 class HomePage extends StatefulWidget {
   var userType;
-  HomePage({super.key, this.userType});
+  var name;
+  HomePage({super.key, this.userType, this.name});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  var mapData = [];
+  var length;
+
+  fetchSp(String params) async {
+    try {
+      Response response = await get(
+        Uri.parse("http://10.0.2.2:8000/api/service_provider/?service=$params"),
+      );
+      var spDetail = jsonDecode(response.body.toString());
+
+      if (response.statusCode == 200) {
+        _HomePageState().setState(() {
+          mapData = spDetail;
+          length = mapData.length;
+        });
+        print(mapData);
+      } else {
+        print(
+          spDetail["message"],
+        );
+      }
+    } catch (e) {
+      print("Error is $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String type = widget.userType;
+
     return Scaffold(
       backgroundColor: Color(0xffEEF1F9),
       body: SafeArea(
@@ -24,14 +57,10 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               top(),
-              type == "Clients"?
-              search(): Text("Welcome Service Provider"),
-              type == "Clients"?
-              OfferSlider(): Container(),
-              type == "Clients"?
-              Categories(): Container(),
-              type == "Clients"?
-              TrendingSP(): Container(),
+              type == "Clients" ? search() : Text("Welcome Service Provider"),
+              type == "Clients" ? OfferSlider() : Container(),
+              type == "Clients" ? Categories() : Container(),
+              type == "Clients" ? TrendingSP() : Container(),
             ],
           ),
         ),
@@ -40,64 +69,78 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget top() {
+    String user_name = widget.name;
+
     return Container(
-      margin: EdgeInsets.only(top: 30, left: 25, right: 25),
+      margin: const EdgeInsets.only(top: 30, left: 25, right: 25),
       child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage("images/default-profile.png"),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                "Mark Tatum",
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+        children: [
+          Expanded(
+            flex: 3,
+            child: Row(
+              children: <Widget>[
+                const CircleAvatar(
+                  radius: 22,
+                  backgroundImage: AssetImage("images/default-profile.png"),
                 ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Edit",
-                    style: TextStyle(
-                      color: Color(0xffF2861E),
-                      fontSize: 14,
-                      letterSpacing: 0.5,
+                const SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      user_name,
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
                     ),
-                  ),
-                  Icon(
-                    Icons.edit,
-                    color: Color(0xffF2861E),
-                    size: 15,
-                  )
-                ],
-              ),
-            ],
-          ),
-          SizedBox(width: 150),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NotificationPage()));
-            },
-            child: Container(
-              width: 45,
-              height: 45,
-              child: Icon(Icons.notifications, color: Colors.white, size: 24),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.orangeAccent,
-              ),
+                    Row(
+                      children: [
+                        Text(
+                          "Edit",
+                          style: TextStyle(
+                            color: Color(0xffF2861E),
+                            fontSize: 14,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        Icon(
+                          Icons.edit,
+                          color: Color(0xffF2861E),
+                          size: 15,
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
+          Expanded(
+            flex: 1,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationPage()));
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 45),
+                width: 45,
+                height: 45,
+                child: Icon(Icons.notifications, color: Colors.white, size: 24),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.orangeAccent,
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -147,6 +190,10 @@ class CustomSearchDelegate extends SearchDelegate {
     'Cleaner',
     'Painter',
     'Carpenter',
+    'Babysitter',
+    'Electrician',
+    'Elderly care',
+    'Plumber',
   ];
 
   @override
@@ -178,25 +225,195 @@ class CustomSearchDelegate extends SearchDelegate {
         matchQuery.add(sp_types);
       }
     }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: ((context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-        );
-      }),
-    );
+    var result = matchQuery[0];
+    print(result);
+    _HomePageState().fetchSp(result);
+    print(_HomePageState().fetchSp(result));
+    var length = _HomePageState().length;
+    var mapData = _HomePageState().mapData;
+    return Scaffold(
+        body: mapData == null
+            ? Center(
+                child: Text(
+                  "No service available",
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+              )
+            : Container(
+                margin: EdgeInsets.only(left: 25, right: 25, top: 20),
+                child: SingleChildScrollView(
+                  child: Container(
+                    child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: length,
+                        itemBuilder: (context, index) {
+                          if (mapData[index]['active_status'] == true) {
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SP_profile(
+                                                id: mapData[index]['id'],
+                                                spName: mapData[index]
+                                                        ['service_provider']
+                                                    ['name'],
+                                                email: mapData[index]
+                                                        ['service_provider']
+                                                    ['email'],
+                                                contact: mapData[index]
+                                                        ['service_provider']
+                                                    ['phone'],
+                                                location: mapData[index]
+                                                        ['service_provider']
+                                                    ['location'],
+                                                service: mapData[index]
+                                                    ['service'],
+                                              )));
+                                  // builder: (context) => CandidateProfile()));
+                                },
+                                child: Row(
+                                  children: [
+                                    // Image section
+                                    Container(
+                                      width: 90,
+                                      height: 90,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              bottomLeft: Radius.circular(20)),
+                                          color: Colors.white38,
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: AssetImage(
+                                                  "images/default-profile.png"))),
+                                    ),
+                                    // Text section
+                                    Expanded(
+                                      child: Container(
+                                        height: 90,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(20),
+                                              bottomRight: Radius.circular(20)),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 15,
+                                              left: 15,
+                                              right: 10,
+                                              bottom: 10),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        mapData[index][
+                                                                'service_provider']
+                                                            ['name'],
+                                                        style: TextStyle(
+                                                          color: Colors.black54,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Text(
+                                                        mapData[index]
+                                                            ['service'],
+                                                        style: TextStyle(
+                                                          color: Colors.black38,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                              ),
+                                              Container(
+                                                  margin: EdgeInsets.only(
+                                                      top: 35, right: 10),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: const [
+                                                      Icon(
+                                                        Icons.star,
+                                                        size: 18,
+                                                        color: Colors.yellow,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(
+                                                        "4.5",
+                                                        style: TextStyle(
+                                                          color: Colors.black26,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ))
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }),
+                  ),
+                ),
+              ));
+
+    // return ListView.builder(
+    //   itemCount: matchQuery.length,
+    //   itemBuilder: ((context, index) {
+    //     var result = matchQuery[index];
+    //     fetchSp(result);
+
+    //   }),
+    // );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    _resultScreen(String result) {}
+
     List<String> matchQuery = [];
     for (var sp_types in searchTerms) {
       if (sp_types.toLowerCase().contains((query.toLowerCase()))) {
         matchQuery.add(sp_types);
       }
     }
+
     return ListView.builder(
       itemCount: matchQuery.length,
       itemBuilder: ((context, index) {

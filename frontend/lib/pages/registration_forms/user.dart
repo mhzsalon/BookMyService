@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/confirm_booking.dart';
 import 'package:frontend/pages/login/login.dart';
-import 'package:frontend/pages/login/loginUser.dart';
 import 'package:frontend/pages/notification.dart';
 import 'package:frontend/pages/register.dart';
 import 'package:frontend/pages/sp_profile.dart';

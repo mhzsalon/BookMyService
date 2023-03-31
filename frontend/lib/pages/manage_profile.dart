@@ -1,13 +1,21 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/changePW.dart';
+import 'package:frontend/editUser.dart';
 import 'package:frontend/pages/login/login.dart';
 import 'package:frontend/pages/notification.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  var id;
+  var email;
+  var name;
+  var type;
+  Profile({super.key, this.email, this.name, this.type, this.id});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -16,8 +24,48 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool active = true;
 
+  status(String id) async {
+    Response response = await get(
+      Uri.parse("http://10.0.2.2:8000/api/activate/?id=$id"),
+    );
+    var spDetail = jsonDecode(response.body.toString());
+    if (response.statusCode == 200) {
+      setState(() {
+        active = spDetail['active_status'];
+      });
+      print(spDetail);
+    }
+  }
+
+  activateUser(String id) async {
+    Response response = await put(
+      Uri.parse("http://10.0.2.2:8000/api/activate/?email=$id"),
+    );
+    var spDetail = jsonDecode(response.body.toString());
+    print(spDetail['message']);
+  }
+
+  deactivateUser(String id) async {
+    Response response = await put(
+      Uri.parse("http://10.0.2.2:8000/api/deactivate/?email=$id"),
+    );
+    var spDetail = jsonDecode(response.body.toString());
+    print(spDetail['message']);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    if (widget.type == 'Service Provider') {
+      status(widget.id.toString());
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    String _name = widget.name;
+    String _email = widget.email;
     return Scaffold(
       // appBar: AppBar(
       //   toolbarHeight: 68,
@@ -53,9 +101,9 @@ class _ProfileState extends State<Profile> {
           ),
 
           Container(
-            margin: EdgeInsets.only(top: 25),
+            margin: EdgeInsets.only(top: 15),
             child: Text(
-              "Salon Maharjan",
+              _name,
               style: TextStyle(
                   color: Colors.black54,
                   fontSize: 20,
@@ -66,9 +114,9 @@ class _ProfileState extends State<Profile> {
           Container(
             margin: EdgeInsets.only(top: 3),
             child: Text(
-              "mhrznsalon@gmail.com",
+              _email,
               style: TextStyle(
-                  color: Colors.black38,
+                  color: Colors.black45,
                   fontSize: 14,
                   fontWeight: FontWeight.normal),
             ),
@@ -85,7 +133,15 @@ class _ProfileState extends State<Profile> {
                   foregroundColor: Colors.white,
                   backgroundColor: Color(0xffF2861E),
                   minimumSize: Size(100, 50)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditUser(
+                              id: widget.id,
+                              type: widget.type,
+                            )));
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -108,9 +164,14 @@ class _ProfileState extends State<Profile> {
             ),
           ),
 
-          // Profile settings
+          // Change Password
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChangePW(id: widget.id)));
+            },
             child: Container(
               margin: EdgeInsets.only(top: 55, left: 35, right: 35),
               height: 55,
@@ -140,48 +201,52 @@ class _ProfileState extends State<Profile> {
             ),
           ),
 
-          // Notification
-
-          //Active
-          Container(
-            margin: EdgeInsets.only(top: 15, left: 35, right: 35),
-            height: 55,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Color.fromARGB(160, 238, 237, 237),
-            ),
-            child: Row(children: <Widget>[
-              SizedBox(
-                width: 30,
-              ),
-              Icon(
-                Icons.account_circle_sharp,
-                color: Colors.black54,
-              ),
-              SizedBox(
-                width: 15,
-              ),
-              Text(
-                "Active",
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500),
-              ),
-              SizedBox(
-                width: 130,
-              ),
-              Switch(
-                value: active,
-                activeColor: Colors.green,
-                onChanged: (bool value) {
-                  setState(() {
-                    active = value;
-                  });
-                },
-              ),
-            ]),
-          ),
+          widget.type == "Service Provider"
+              ?
+              //Active
+              Container(
+                  margin: EdgeInsets.only(top: 15, left: 35, right: 35),
+                  height: 55,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Color.fromARGB(160, 238, 237, 237),
+                  ),
+                  child: Row(children: <Widget>[
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Icon(
+                      Icons.account_circle_sharp,
+                      color: Colors.black54,
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "Active",
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(
+                      width: 130,
+                    ),
+                    Switch(
+                      value: active,
+                      activeColor: Colors.green,
+                      onChanged: (bool value) {
+                        setState(() {
+                          active = value;
+                          active == true
+                              ? activateUser(widget.id)
+                              : deactivateUser(widget.id);
+                        });
+                      },
+                    ),
+                  ]),
+                )
+              : Container(),
 
           // logout
           GestureDetector(

@@ -5,9 +5,12 @@ import 'package:frontend/pages/notification.dart';
 import 'package:frontend/pages/manage_profile.dart';
 
 class LandingPage extends StatefulWidget {
+  var id;
   var userAccess;
+  var email;
+  var name;
 
-  LandingPage({super.key,  this.userAccess});
+  LandingPage({super.key, this.userAccess, this.email, this.name, this.id});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -15,19 +18,22 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   int _currentIndex = 0;
-  // String a = "${widget.userAccess}";
-  // List<Widget> screen = [
-  //   // HomePage(userType: widget.userAccess),
-  //   MyBooking(),
-  //   Profile(),
-  // ];
+
   @override
   Widget build(BuildContext context) {
     //  String a = "${widget.userAccess}";
     List<Widget> screen = [
-      HomePage(userType: widget.userAccess),
+      HomePage(
+        userType: widget.userAccess,
+        name: widget.name,
+      ),
       MyBooking(),
-      Profile(),
+      Profile(
+        email: widget.email,
+        name: widget.name,
+        type: widget.userAccess,
+        id: widget.id,
+      ),
     ];
     return Scaffold(
       body: screen[_currentIndex],

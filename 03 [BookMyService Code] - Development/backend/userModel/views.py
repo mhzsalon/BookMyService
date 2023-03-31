@@ -2,17 +2,14 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from rest_framework.authtoken.models import Token
-from django.db.models.query_utils import Q
 
 from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUser, ServiceProvider
 
 from rest_framework.decorators import APIView
-from .serializer import UserSerializer, LoginSerializer, SpSerializer
+from .serializer import UserSerializer, LoginSerializer, SpSerializer, StatusSerializer
 from django.contrib.auth import authenticate, login, logout
-from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your views here.
 class UserLogin(APIView):
@@ -148,5 +145,100 @@ class getSP(APIView):
             print(e)
             return Response({'message': 'Error!'}, status=status.HTTP_404_NOT_FOUND)
 
+def delete(request):
+        try:
+            delete_user= CustomUser.objects.get(id=request.query_params.get('id'));
+            print(delete_user)
+            delete_user.delete()
+        except:
+            return Response({'message': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
  
 
+class activateUser(APIView):
+    def get(self, request):
+        activate = ServiceProvider.objects.get(service_provider__email=request.query_params.get('email'))
+        serializer = StatusSerializer(activate, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self,request):
+        try:
+            # uID = request.user
+            activate = ServiceProvider.objects.get(service_provider__email=request.query_params.get('email'))
+            print(activate)
+            activate.active_status=True
+            activate.save()
+            serializer = StatusSerializer(activate, many=False)
+
+            return Response({'message': 'User activated'}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+                print(e)
+                return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class deactivateUser(APIView):
+    def put(self,request):
+        try:
+            # uID = request.user
+            activate = ServiceProvider.objects.get(service_provider__email=request.query_params.get('email'))
+            print(activate)
+            activate.active_status=False
+            activate.save()
+
+            return Response({'message': 'User de-activated'}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+                print(e)
+                return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+class changePw(APIView):
+     def put(self, request, *args, **kwargs):
+        try:
+            uID =request.data['id']
+            newpw = request.data['password']
+            repw = request.data['repassword']
+            print(newpw)
+            print(repw)
+            if newpw == repw:
+                userdata = CustomUser.objects.get(id=uID)
+                userdata.set_password(newpw)
+                userdata.save()
+                return Response({"message": "The password has been reset!", }, status=status.HTTP_200_OK, )
+            else:
+                return Response({"message": "Password does not match", }, status=status.HTTP_406_NOT_ACCEPTABLE, )
+        except Exception as e:
+            print(e)
+            return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+class updateUser(APIView):
+    def put(self, request, *args, **kwargs):
+        try:
+            user_detail = CustomUser.objects.get(id=request.query_params.get('id'))
+            if request.data['name'] is not None and request.data['name'] != '':
+                user_detail.name = request.data['name']
+            if request.data['email'] is not None and request.data['email'] != '':
+                user_detail.email = request.data['email']
+            if request.data['phone'] is not None and request.data['phone'] != '':
+                user_detail.phone = request.data['phone']
+            if request.data['location'] is not None and request.data['location'] != '':
+                user_detail.location = request.data['location']
+            user_detail.save()
+            return Response({"message": "The details has been updated!" }, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({
+                "message": "Error!",
+            },
+                status=status.HTTP_400_BAD_REQUEST, )
+
+    def get(self, request, *args, **kwargs):
+        userData = CustomUser.objects.get(id=request.query_params.get('id'))
+        if userData.user_type == 'Service Provider':
+            spData= ServiceProvider.objects.get(service_provider=request.query_params.get('id'))
+            serializer = SpSerializer(spData, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        else:
+            serializer = UserSerializer(userData, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        

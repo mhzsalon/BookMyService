@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:frontend/pages/confirm_booking.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -11,10 +13,33 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-TimeOfDay time = TimeOfDay(hour: 9, minute: 0);
+  TimeOfDay time = TimeOfDay(hour: 9, minute: 0);
   DateTime _selectedDate = DateTime.now();
 
   TextEditingController _textEdit = TextEditingController();
+  TextEditingController _location = TextEditingController();
+  TextEditingController _requirements = TextEditingController();
+
+  // DateTime startDate = DateFormat("hh:mma").parse(_textEdit.toString());
+  DateTime endDate = DateFormat("hh:mma").parse("10:00PM");
+
+//   Duration dif = endDate.difference(startDate);
+
+// // Print the result in any format you want
+// print(dif.toString(); // 12:00:00.000000
+// print(dif.inHours); /
+
+  bookService() async {
+    Response _response = await post(
+        Uri.parse("http://10.0.2.2:8000/booking/book-service/"),
+        body: {
+          'serviceDate': '',
+          'location': '',
+          'price': '',
+          'start-time': '',
+          'end-time': '',
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +231,13 @@ TimeOfDay time = TimeOfDay(hour: 9, minute: 0);
     ).then((value) {
       setState(() {
         time = value!;
-        _textEdit.text = time.format(context).toString();
+        // DateTime endDate =
+        //     DateFormat("hh:mm").parse(time.format(context).toString());
+        // _textEdit = endDate as TextEditingController;
+        // print("-------------");
+        // print(endDate);
+        // print("-------------");
+        print(time);
       });
     });
   }
@@ -232,7 +263,7 @@ TimeOfDay time = TimeOfDay(hour: 9, minute: 0);
             height: 50,
             alignment: Alignment.center,
             child: TextField(
-              controller: _textEdit,
+              controller: _location,
               decoration: InputDecoration(
                   suffixIcon: IconButton(
                     onPressed: () {},
@@ -287,7 +318,7 @@ TimeOfDay time = TimeOfDay(hour: 9, minute: 0);
               ),
             ),
           ),
-        ],
+        ]
       ),
     );
   }

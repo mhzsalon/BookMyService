@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/SpList.dart';
@@ -70,146 +70,175 @@ class _CategoriesState extends State<Categories> {
                                   shrinkWrap: true,
                                   itemCount: mapData.length,
                                   itemBuilder: (context, index) {
-                                    return Container(
-                                      margin: EdgeInsets.only(bottom: 10),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SP_profile()));
-                                          // builder: (context) => CandidateProfile()));
-                                        },
-                                        child: Row(
-                                          children: [
-                                            // Image section
-                                            Container(
-                                              width: 90,
-                                              height: 90,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  20),
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  20)),
-                                                  color: Colors.white38,
-                                                  image: DecorationImage(
-                                                      fit: BoxFit.cover,
-                                                      image: AssetImage(
-                                                          "images/default-profile.png"))),
-                                            ),
-                                            // Text section
-                                            Expanded(
-                                              child: Container(
+                                    if (mapData[index]['active_status'] ==
+                                        true) {
+                                      return Container(
+                                        margin: EdgeInsets.only(bottom: 10),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SP_profile(
+                                                          id: mapData[index]
+                                                              ['id'],
+                                                          spName: mapData[index]
+                                                                  [
+                                                                  'service_provider']
+                                                              ['name'],
+                                                          email: mapData[index][
+                                                                  'service_provider']
+                                                              ['email'],
+                                                          contact: mapData[
+                                                                      index][
+                                                                  'service_provider']
+                                                              ['phone'],
+                                                          location: mapData[
+                                                                      index][
+                                                                  'service_provider']
+                                                              ['location'],
+                                                          service:
+                                                              mapData[index]
+                                                                  ['service'],
+                                                        )));
+                                            // builder: (context) => CandidateProfile()));
+                                          },
+                                          child: Row(
+                                            children: [
+                                              // Image section
+                                              Container(
+                                                width: 90,
                                                 height: 90,
                                                 decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  20),
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  20)),
-                                                  color: Colors.white,
-                                                ),
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top: 15,
-                                                      left: 15,
-                                                      right: 10,
-                                                      bottom: 10),
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Text(
-                                                                mapData[index][
-                                                                        'service_provider']
-                                                                    ['name'],
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black54,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 14,
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topLeft: Radius
+                                                                .circular(20),
+                                                            bottomLeft:
+                                                                Radius.circular(
+                                                                    20)),
+                                                    color: Colors.white38,
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.cover,
+                                                        image: AssetImage(
+                                                            "images/default-profile.png"))),
+                                              ),
+                                              // Text section
+                                              Expanded(
+                                                child: Container(
+                                                  height: 90,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topRight: Radius
+                                                                .circular(20),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    20)),
+                                                    color: Colors.white,
+                                                  ),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 15,
+                                                        left: 15,
+                                                        right: 10,
+                                                        bottom: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Text(
+                                                                  mapData[index]
+                                                                          [
+                                                                          'service_provider']
+                                                                      ['name'],
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .black54,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 10),
-                                                              Text(
-                                                                mapData[index]
-                                                                    ['service'],
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black38,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 12,
+                                                                SizedBox(
+                                                                    height: 10),
+                                                                Text(
+                                                                  mapData[index]
+                                                                      [
+                                                                      'service'],
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .black38,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        12,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                            ]),
-                                                      ),
-                                                      Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  top: 35,
-                                                                  right: 10),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Icon(
-                                                                Icons.star,
-                                                                size: 18,
-                                                                color: Colors
-                                                                    .yellow,
-                                                              ),
-                                                              SizedBox(
-                                                                width: 5,
-                                                              ),
-                                                              Text(
-                                                                "4.5",
-                                                                style:
-                                                                    TextStyle(
+                                                              ]),
+                                                        ),
+                                                        Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 35,
+                                                                    right: 10),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children: const [
+                                                                Icon(
+                                                                  Icons.star,
+                                                                  size: 18,
                                                                   color: Colors
-                                                                      .black26,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 12,
+                                                                      .yellow,
                                                                 ),
-                                                              ),
-                                                            ],
-                                                          ))
-                                                    ],
+                                                                SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                  "4.5",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .black26,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        12,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ))
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
                                   }),
                             ),
                           ),
@@ -268,51 +297,64 @@ class _CategoriesState extends State<Categories> {
             ),
           ),
 
-          Scrollbar(
-            radius: Radius.circular(10),
-            thickness: 5,
-            child: Container(
-              width: 350,
-              margin: EdgeInsets.only(bottom: 15),
-              height: 110,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _service.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      fetchSp(_service[index]);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(right: 27, top: 15, bottom: 5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            child: Icon(_serviceIcons[index],
-                                color: Colors.orangeAccent, size: 28),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Color.fromRGBO(255, 172, 64, 0.204),
-                            ),
+          Row(
+            children: [
+              Scrollbar(
+                radius: Radius.circular(10),
+                thickness: 5,
+                child: Container(
+                  width: 330,
+                  margin: EdgeInsets.only(bottom: 15),
+                  height: 110,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _service.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          fetchSp(_service[index]);
+                        },
+                        child: Container(
+                          margin:
+                              EdgeInsets.only(right: 27, top: 15, bottom: 5),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 60,
+                                child: Icon(_serviceIcons[index],
+                                    color: Colors.orangeAccent, size: 28),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Color.fromRGBO(255, 172, 64, 0.204),
+                                ),
+                              ),
+                              Text(
+                                _service[index],
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              )
+                            ],
                           ),
-                          Text(
-                            _service[index],
-                            style: TextStyle(
-                              color: Colors.black45,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
+              Container(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Icon(
+                  Icons.keyboard_arrow_right,
+                  size: 40,
+                  color: Colors.black26,
+                ),
+              )
+            ],
           ),
           // Container(
           //   color: Colors.blue,

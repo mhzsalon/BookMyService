@@ -16,11 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('userModel.urls')),
+    path('booking/', include('booking.urls')),
     path('', include('admin_panel.urls')),
+    path('feedback/', include('review.urls')),
 
 
 
 ]
+# urlpatterns=urlpatterns+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

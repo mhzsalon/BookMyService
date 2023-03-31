@@ -1,10 +1,27 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/Sp_profile_components/about_section.dart';
 import 'package:frontend/pages/Sp_profile_components/review_section.dart';
+import 'package:http/http.dart';
 import 'package:tab_container/tab_container.dart';
 
 class SP_profile extends StatefulWidget {
-  const SP_profile({super.key});
+  var id;
+  var service;
+  var spName;
+  var email;
+  var contact;
+  var location;
+
+  SP_profile(
+      {super.key,
+      this.id,
+      this.service,
+      this.contact,
+      this.email,
+      this.spName,
+      this.location});
 
   @override
   State<SP_profile> createState() => _SP_profileState();
@@ -12,10 +29,15 @@ class SP_profile extends StatefulWidget {
 
 class _SP_profileState extends State<SP_profile> {
   int currentTab = 0;
-  final List<Widget> screens = [aboutSection(), reviewSection()];
-
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = aboutSection();
+  final List<Widget> screens = [aboutSection(), reviewSection()];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +61,109 @@ class _SP_profileState extends State<SP_profile> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           top(),
-          content(),
+          Container(
+            padding: EdgeInsets.only(top: 50, left: 30, right: 30),
+            child: Column(
+              children: [
+                Row(
+                  children: <Widget>[
+                    //About
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          currentScreen = aboutSection(
+                            email: widget.email,
+                            phone: widget.contact,
+                            location: widget.location,
+                          );
+                          currentTab = 0;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        alignment: Alignment.center,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: currentTab == 0
+                                  ? Color(0xffF2861E)
+                                  : Color(0xffEEF1F9),
+                              width: 6.0,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          "About",
+                          style: TextStyle(
+                              fontSize: currentTab == 0 ? 20 : 16,
+                              color: currentTab == 0
+                                  ? Color(0xffF2861E)
+                                  : Colors.black38,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    // Review
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          currentScreen = reviewSection();
+                          currentTab = 1;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        alignment: Alignment.center,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: currentTab == 1
+                                  ? Color(0xffF2861E)
+                                  : Color(0xffEEF1F9),
+                              width: 6.0,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          "Review",
+                          style: TextStyle(
+                              fontSize: currentTab == 1 ? 20 : 16,
+                              color: currentTab == 1
+                                  ? Color(0xffF2861E)
+                                  : Colors.black38,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                PageStorage(
+                    bucket: bucket,
+                    child: currentTab == 0
+                        ? aboutSection(
+                            email: widget.email,
+                            phone: widget.contact,
+                            location: widget.location,
+                          )
+                        : reviewSection(id: widget.id)),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget top() {
+    String? _name = widget.spName;
+    String? _service = widget.service;
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -67,7 +185,7 @@ class _SP_profileState extends State<SP_profile> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "Mark Tatum",
+                  _name!,
                   style: TextStyle(
                       fontSize: 22,
                       color: Colors.white,
@@ -82,7 +200,7 @@ class _SP_profileState extends State<SP_profile> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          "Home Cleaner",
+                          _service!,
                           style: TextStyle(
                             fontSize: 16,
                             color: Color.fromARGB(233, 255, 255, 255),
@@ -111,89 +229,93 @@ class _SP_profileState extends State<SP_profile> {
     );
   }
 
-  Widget content() {
-    return Container(
-      padding: EdgeInsets.only(top: 50, left: 30, right: 30),
-      child: Column(
-        children: [
-          Row(
-            children: <Widget>[
-              //About
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    currentScreen = aboutSection();
-                    currentTab = 0;
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.only(bottom: 5),
-                  alignment: Alignment.center,
-                  width: 120,
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: currentTab == 0
-                            ? Color(0xffF2861E)
-                            : Color(0xffEEF1F9),
-                        width: 6.0,
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    "About",
-                    style: TextStyle(
-                        fontSize: currentTab == 0 ? 20 : 16,
-                        color: currentTab == 0
-                            ? Color(0xffF2861E)
-                            : Colors.black38,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 1),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              // Review
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    currentScreen = reviewSection();
-                    currentTab = 1;
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.only(bottom: 5),
-                  alignment: Alignment.center,
-                  width: 120,
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: currentTab == 1
-                            ? Color(0xffF2861E)
-                            : Color(0xffEEF1F9),
-                        width: 6.0,
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    "Review",
-                    style: TextStyle(
-                        fontSize: currentTab == 1 ? 20 : 16,
-                        color: currentTab == 1
-                            ? Color(0xffF2861E)
-                            : Colors.black38,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 1),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          PageStorage(bucket: bucket, child: currentScreen),
-        ],
-      ),
-    );
-  }
+  // Widget content0() {
+  //   return Container(
+  //     padding: EdgeInsets.only(top: 50, left: 30, right: 30),
+  //     child: Column(
+  //       children: [
+  //         Row(
+  //           children: <Widget>[
+  //             //About
+  //             GestureDetector(
+  //               onTap: () {
+  //                 setState(() {
+  //                   currentScreen = aboutSection(
+  //                     email: widget.email,
+  //                     phone: widget.contact,
+  //                     location: widget.location,
+  //                   );
+  //                   currentTab = 0;
+  //                 });
+  //               },
+  //               child: Container(
+  //                 padding: EdgeInsets.only(bottom: 5),
+  //                 alignment: Alignment.center,
+  //                 width: 120,
+  //                 decoration: BoxDecoration(
+  //                   border: Border(
+  //                     bottom: BorderSide(
+  //                       color: currentTab == 0
+  //                           ? Color(0xffF2861E)
+  //                           : Color(0xffEEF1F9),
+  //                       width: 6.0,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 child: Text(
+  //                   "About",
+  //                   style: TextStyle(
+  //                       fontSize: currentTab == 0 ? 20 : 16,
+  //                       color: currentTab == 0
+  //                           ? Color(0xffF2861E)
+  //                           : Colors.black38,
+  //                       fontWeight: FontWeight.w500,
+  //                       letterSpacing: 1),
+  //                 ),
+  //               ),
+  //             ),
+  //             SizedBox(
+  //               width: 5,
+  //             ),
+  //             // Review
+  //             GestureDetector(
+  //               onTap: () {
+  //                 setState(() {
+  //                   currentScreen = reviewSection();
+  //                   currentTab = 1;
+  //                 });
+  //               },
+  //               child: Container(
+  //                 padding: EdgeInsets.only(bottom: 5),
+  //                 alignment: Alignment.center,
+  //                 width: 120,
+  //                 decoration: BoxDecoration(
+  //                   border: Border(
+  //                     bottom: BorderSide(
+  //                       color: currentTab == 1
+  //                           ? Color(0xffF2861E)
+  //                           : Color(0xffEEF1F9),
+  //                       width: 6.0,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 child: Text(
+  //                   "Review",
+  //                   style: TextStyle(
+  //                       fontSize: currentTab == 1 ? 20 : 16,
+  //                       color: currentTab == 1
+  //                           ? Color(0xffF2861E)
+  //                           : Colors.black38,
+  //                       fontWeight: FontWeight.w500,
+  //                       letterSpacing: 1),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         PageStorage(bucket: bucket, child: currentScreen),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

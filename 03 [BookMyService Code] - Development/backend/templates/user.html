@@ -40,7 +40,11 @@
                                 <td>{{user.phone}}</td>
                                 <td>{{user.location}}</td>
                                 <td>{{user.gender}}</td>
-                                <td><button> Delete</button></td>
+                                <td><form action="{% url 'delete-user' user.id %}" method="post">
+                                  {% csrf_token %}
+
+                                  <input type="submit" value="Delete">
+                                </form></td>
                             </tr>
                             {% endfor %}
                             

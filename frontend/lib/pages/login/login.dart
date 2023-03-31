@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:convert';
 
@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/home.dart';
 import 'package:frontend/pages/landing_page.dart';
-import 'package:frontend/pages/login/loginUser.dart';
 import 'package:frontend/pages/register.dart';
 import 'package:http/http.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -21,6 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isEmpty = false;
 
   fetchData() async {
     try {
@@ -40,6 +40,9 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(
                 builder: (context) => LandingPage(
                       userAccess: loginDetail['user_type'],
+                      email: loginDetail['email'],
+                      name: loginDetail['name'],
+                      id: loginDetail['id'],
                     )));
       } else {
         print(
@@ -137,7 +140,9 @@ class _LoginPageState extends State<LoginPage> {
                       hintText: "Password",
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.grey.shade200,
+                          color: _isEmpty == false
+                              ? Colors.grey.shade200
+                              : Colors.red,
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
