@@ -45,6 +45,18 @@ dependencies:
   awesome_dialog: ^3.0.2
   flutter_local_notifications: ^13.0.0
   timeago: ^3.3.0
+  path_provider: ^2.0.13
+  image_picker: ^0.8.7+1
+  # khalti: ^2.0.0
+  khalti_flutter: ^2.1.0
+
+  #for accessing firebase messaging
+  firebase_messaging: ^14.4.0
+
+  app_settings: ^4.2.0
+  firebase_core: ^2.9.0
+
+  # cloud_firestore: ^4.5.0
 
 dev_dependencies:
   flutter_test:

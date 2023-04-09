@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:http/http.dart';
 
 class EditUser extends StatefulWidget {
@@ -18,8 +19,11 @@ class _EditUserState extends State<EditUser> {
   TextEditingController email = TextEditingController();
   TextEditingController location = TextEditingController();
   TextEditingController phone = TextEditingController();
+  TextEditingController description = TextEditingController();
+
   String? serviceValue;
 
+  CallApi obj = CallApi();
   var serviceList = [
     'Cleaner',
     'Carpenter',
@@ -30,25 +34,22 @@ class _EditUserState extends State<EditUser> {
     'Plumber',
   ];
 
-  _getSpDetail() {
-    print("pssss");
-  }
-
-  _getUserDetail(String id) async {
+  _getSpDetail(String id) async {
     try {
       Response _pw = await get(
-        Uri.parse("http://10.0.2.2:8000/api/update-user/?id=$id"),
+        Uri.parse(obj.url + "/api/update-sp/?id=$id"),
       );
       var data = jsonDecode(_pw.body.toString());
       print(data);
 
       if (_pw.statusCode == 200) {
         setState(() {
-          phone.text = data['phone'];
-          name.text = data['name'];
-          email.text = data['email'];
-          location.text = data['location'];
+          phone.text = data['service_provider']['phone'];
+          name.text = data['service_provider']['name'];
+          email.text = data['service_provider']['email'];
+          location.text = data['service_provider']['location'];
           serviceValue = data['service'];
+          description.text = data['description'];
         });
       }
     } catch (e) {
@@ -56,16 +57,62 @@ class _EditUserState extends State<EditUser> {
     }
   }
 
-  updateUser(String id) async {
+  _getUserDetail(String id, String type) async {
+    try {
+      Response _pw = await get(
+        type == "Service Provider"
+            ? Uri.parse(obj.url + "/api/update-sp/?id=$id")
+            : Uri.parse(obj.url + "/api/update-user/?id=$id"),
+      );
+      var data = jsonDecode(_pw.body.toString());
+      print(data);
+
+      if (_pw.statusCode == 200) {
+        if (type == "Service Provider") {
+          setState(() {
+            phone.text = data['service_provider']['phone'];
+            name.text = data['service_provider']['name'];
+            email.text = data['service_provider']['email'];
+            location.text = data['service_provider']['location'];
+            serviceValue = data['service'];
+            description.text = data['description'];
+          });
+        } else {
+          setState(() {
+            phone.text = data['phone'];
+            name.text = data['name'];
+            email.text = data['email'];
+            location.text = data['location'];
+            serviceValue = data['service'];
+          });
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  updateUser(String id, String type) async {
     try {
       Response updated = await put(
-          Uri.parse("http://10.0.2.2:8000/api/update-user/?id=$id"),
-          body: {
-            'name': name.text.toString(),
-            'email': email.text.toString(),
-            'location': location.text.toString(),
-            'phone': phone.text.toString(),
-          });
+          type == "Service Provider"
+              ? Uri.parse(obj.url + "/api/update-sp/?id=$id")
+              : Uri.parse(obj.url + "/api/update-user/?id=$id"),
+          body: type == "Service Provider"
+              ? {
+                  'name': name.text.toString(),
+                  'email': email.text.toString(),
+                  'location': location.text.toString(),
+                  'phone': phone.text.toString(),
+                  'service': serviceValue.toString(),
+                  'description': description.text.toString(),
+                }
+              : {
+                  'name': name.text.toString(),
+                  'email': email.text.toString(),
+                  'location': location.text.toString(),
+                  'phone': phone.text.toString(),
+                });
       var msg = jsonDecode(updated.body.toString());
       if (updated.statusCode == 200) {
         AwesomeDialog(
@@ -92,9 +139,9 @@ class _EditUserState extends State<EditUser> {
   @override
   void initState() {
     // TODO: implement initState
-    widget.type == "Service Provider"
-        ? _getSpDetail()
-        : _getUserDetail(widget.id.toString());
+    // widget.type == "Service Provider"
+    //     ? _getSpDetail(widget.id.toString())
+    _getUserDetail(widget.id.toString(), widget.type.toString());
     super.initState();
   }
 
@@ -119,13 +166,13 @@ class _EditUserState extends State<EditUser> {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.only(left: 25, right: 25, top: 40),
+                margin: EdgeInsets.only(left: 25, right: 25, top: 32),
                 // alignment: Align?ment.center,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                        margin: EdgeInsets.only(left: 15, bottom: 10),
+                        margin: EdgeInsets.only(left: 15, bottom: 7),
                         child: Text(
                           "Name",
                           style: TextStyle(fontSize: 16, color: Colors.black45),
@@ -161,7 +208,7 @@ class _EditUserState extends State<EditUser> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                        margin: EdgeInsets.only(left: 15, bottom: 10),
+                        margin: EdgeInsets.only(left: 15, bottom: 7),
                         child: Text(
                           "Email",
                           style: TextStyle(fontSize: 16, color: Colors.black45),
@@ -197,7 +244,7 @@ class _EditUserState extends State<EditUser> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                        margin: EdgeInsets.only(left: 15, bottom: 10),
+                        margin: EdgeInsets.only(left: 15, bottom: 7),
                         child: Text(
                           "Location",
                           style: TextStyle(fontSize: 16, color: Colors.black45),
@@ -233,7 +280,7 @@ class _EditUserState extends State<EditUser> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                        margin: EdgeInsets.only(left: 15, bottom: 10),
+                        margin: EdgeInsets.only(left: 15, bottom: 7),
                         child: Text(
                           "Phone number",
                           style: TextStyle(fontSize: 16, color: Colors.black45),
@@ -269,15 +316,17 @@ class _EditUserState extends State<EditUser> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                            margin: EdgeInsets.only(left: 5, bottom: 10),
+                            margin: EdgeInsets.only(left: 5, bottom: 7),
                             child: Text(
                               "Service type",
                               style: TextStyle(
                                   fontSize: 16, color: Colors.black45),
                             )),
                         Container(
+                          margin: EdgeInsets.only(right: 140),
+
                           height: 50,
-                          width: 340,
+                          width: 200,
                           padding: EdgeInsets.only(left: 20, right: 20),
                           // margin: EdgeInsets.only(top: 10),
                           decoration: BoxDecoration(
@@ -313,7 +362,7 @@ class _EditUserState extends State<EditUser> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                            margin: EdgeInsets.only(left: 15, bottom: 10),
+                            margin: EdgeInsets.only(left: 15, bottom: 7),
                             child: Text(
                               "Description",
                               style: TextStyle(
@@ -323,6 +372,7 @@ class _EditUserState extends State<EditUser> {
                           height: 150,
                           padding: EdgeInsets.only(left: 10, right: 10),
                           child: TextField(
+                            controller: description,
                             minLines: 6,
                             maxLines: null,
                             keyboardType: TextInputType.multiline,
@@ -389,7 +439,8 @@ class _EditUserState extends State<EditUser> {
                           backgroundColor: Color(0xffF2861E),
                           minimumSize: Size(150, 50)),
                       onPressed: () {
-                        updateUser(widget.id.toString());
+                        updateUser(
+                            widget.id.toString(), widget.type.toString());
                       },
                       child: Text(
                         "Save",

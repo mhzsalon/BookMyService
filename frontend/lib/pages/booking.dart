@@ -1,12 +1,19 @@
+import 'dart:convert';
+
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/confirm_booking.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class BookingScreen extends StatefulWidget {
-  const BookingScreen({super.key});
+  var uID;
+  var spID;
+  final double price;
+  BookingScreen({super.key, this.spID, this.uID, required this.price});
 
   @override
   State<BookingScreen> createState() => _BookingScreenState();
@@ -15,30 +22,93 @@ class BookingScreen extends StatefulWidget {
 class _BookingScreenState extends State<BookingScreen> {
   TimeOfDay time = TimeOfDay(hour: 9, minute: 0);
   DateTime _selectedDate = DateTime.now();
-
+  String formattedDate = '';
   TextEditingController _textEdit = TextEditingController();
+  TextEditingController _startTime = TextEditingController();
+  TextEditingController _endTime = TextEditingController();
+
   TextEditingController _location = TextEditingController();
   TextEditingController _requirements = TextEditingController();
 
-  // DateTime startDate = DateFormat("hh:mma").parse(_textEdit.toString());
-  DateTime endDate = DateFormat("hh:mma").parse("10:00PM");
+  // DateTime endTime = DateTime.now().add(Duration(hours: 2));
+  CallApi obj = CallApi();
+  TimeOfDay? st;
+  TimeOfDay? ed;
+  // int? totalHours;
 
-//   Duration dif = endDate.difference(startDate);
+  bookService(String spID, String uID, double price) async {
+    DateTime startTime = DateTime(2023, 4, 3, st!.hour, st!.minute);
+    DateTime endTime = DateTime(2023, 4, 3, ed!.hour, ed!.minute);
+    Duration difference = endTime.difference(startTime);
+    String formattedST = DateFormat('HH:mm:ss').format(startTime);
+    String formattedET = DateFormat('HH:mm:ss').format(endTime);
 
-// // Print the result in any format you want
-// print(dif.toString(); // 12:00:00.000000
-// print(dif.inHours); /
-
-  bookService() async {
-    Response _response = await post(
-        Uri.parse("http://10.0.2.2:8000/booking/book-service/"),
+    int totalHours = difference.inHours;
+    double totalPrice = totalHours * price;
+    print(totalPrice);
+    debugPrint(formattedET);
+    try {
+      print('called');
+      Response _response = await post(
+        Uri.parse(obj.url + "/booking/book-service/"),
         body: {
-          'serviceDate': '',
-          'location': '',
-          'price': '',
-          'start-time': '',
-          'end-time': '',
-        });
+          'id': uID,
+          'sp_id': spID,
+          'serviceDate': DateFormat('yyyy-MM-dd').format(_selectedDate),
+          'location': _location.text.toString(),
+          'price': '$totalPrice',
+          'start_time': '$formattedST',
+          'end_time': '$formattedET',
+          'requirements': _requirements.text.toString(),
+        },
+      );
+      var msg = jsonDecode(_response.body.toString());
+      print(msg);
+
+      if (_response.statusCode == 200) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          headerAnimationLoop: false,
+          animType: AnimType.bottomSlide,
+          title: 'Success',
+          desc: msg['message'],
+          buttonsTextStyle: const TextStyle(color: Colors.black),
+          showCloseIcon: true,
+          btnOkOnPress: () {
+            setState(() {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => confirmBooking(
+                            uID: uID,
+                            price: price,
+                            totalHours: totalHours,
+                          )));
+            });
+          },
+        ).show();
+      } else if (_response.statusCode == 306) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          headerAnimationLoop: false,
+          animType: AnimType.bottomSlide,
+          title: 'Error',
+          desc: msg['message'],
+          buttonsTextStyle: const TextStyle(color: Colors.black),
+          showCloseIcon: true,
+          btnOkOnPress: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => this.widget));
+          },
+        ).show();
+      }
+    } catch (e) {
+      return e;
+    }
   }
 
   @override
@@ -115,7 +185,8 @@ class _BookingScreenState extends State<BookingScreen> {
             onDateChange: ((newDate) {
               setState(() {
                 _selectedDate = newDate;
-                print(_selectedDate.toString());
+                formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
+                print(formattedDate);
               });
             }),
           ),
@@ -168,11 +239,11 @@ class _BookingScreenState extends State<BookingScreen> {
                   // margin: EdgeInsets.only(left: 25, right: 25, top: 10),
                   alignment: Alignment.center,
                   child: TextField(
-                    controller: _textEdit,
+                    controller: _startTime,
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
                           onPressed: () {
-                            pickTime();
+                            pickTime(_startTime, true);
                           },
                           icon: Icon(
                             Icons.access_time,
@@ -196,11 +267,11 @@ class _BookingScreenState extends State<BookingScreen> {
                   // margin: EdgeInsets.only(left: 25, right: 25, top: 10),
                   alignment: Alignment.center,
                   child: TextField(
-                    controller: _textEdit,
+                    controller: _endTime,
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
                           onPressed: () {
-                            pickTime();
+                            pickTime(_endTime, false);
                           },
                           icon: Icon(
                             Icons.access_time,
@@ -224,22 +295,36 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  void pickTime() {
-    showTimePicker(
+  // void pickTime() {
+  //   showTimePicker(
+  //     context: context,
+  //     initialTime: TimeOfDay.now(),
+  //   ).then((value) {
+
+  //     setState(() {
+  //       time = value!;
+  //       // DateTime endDate =
+  //       //     DateFormat("hh:mm").parse(time.format(context).toString());
+  //       // _textEdit = endDate as TextEditingController;
+  //       // print("-------------");
+  //       // print(endDate);
+  //       // print("-------------");
+  //       print(time);
+  //     });
+  //   });
+  // }
+  Future<void> pickTime(TextEditingController controller, bool start) async {
+    final TimeOfDay? selectedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
-    ).then((value) {
+      initialTime: time,
+    );
+    if (selectedTime != null && selectedTime != time) {
       setState(() {
-        time = value!;
-        // DateTime endDate =
-        //     DateFormat("hh:mm").parse(time.format(context).toString());
-        // _textEdit = endDate as TextEditingController;
-        // print("-------------");
-        // print(endDate);
-        // print("-------------");
-        print(time);
+        time = selectedTime;
+        controller.text = time.format(context);
+        start == true ? st = time : ed = time;
       });
-    });
+    }
   }
 
   Widget location() {
@@ -249,7 +334,7 @@ class _BookingScreenState extends State<BookingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "End time",
+            "Location",
             style: TextStyle(
               color: Colors.black54,
               fontWeight: FontWeight.bold,
@@ -289,37 +374,34 @@ class _BookingScreenState extends State<BookingScreen> {
   Widget requirements() {
     return Container(
       margin: EdgeInsets.only(left: 25, right: 25, top: 35),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Requirements",
-            style: TextStyle(
-              color: Colors.black54,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          "Requirements",
+          style: TextStyle(
+            color: Colors.black54,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          color: Colors.white,
+          height: 150,
+          child: TextField(
+            minLines: 6,
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            decoration: InputDecoration(
+              fillColor: Colors.white,
+              alignLabelWithHint: true,
+              border: OutlineInputBorder(),
+              hintText: 'Your requirements for this service',
             ),
           ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            color: Colors.white,
-            height: 150,
-            child: TextField(
-              minLines: 6,
-              maxLines: null,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                fillColor: Colors.white,
-                alignLabelWithHint: true,
-                border: OutlineInputBorder(),
-                hintText: 'Your requirements for this service',
-              ),
-            ),
-          ),
-        ]
-      ),
+        ),
+      ]),
     );
   }
 
@@ -339,8 +421,11 @@ class _BookingScreenState extends State<BookingScreen> {
                   backgroundColor: Color(0xffF2861E),
                   minimumSize: Size(120, 50)),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => confirmBooking()));
+                // bookService(widget.spID.toString(), widget.uID.toString(),
+                //     widget.price);
+                Navigator.pop(context);
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => confirmBooking()));
               },
               child: Text(
                 "Cancel",
@@ -361,8 +446,10 @@ class _BookingScreenState extends State<BookingScreen> {
                   backgroundColor: Color(0xffF2861E),
                   minimumSize: Size(200, 50)),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => confirmBooking()));
+                bookService(widget.spID.toString(), widget.uID.toString(),
+                    widget.price);
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => confirmBooking()));
               },
               child: Text(
                 "Book now",

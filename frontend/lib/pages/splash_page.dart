@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/notification_services.dart';
 import 'package:frontend/pages/login/login.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -9,10 +11,14 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
+  // NotificationServices notificationServices = NotificationServices();
+
   @override
   void initState() {
     super.initState();
+   
     startTimer();
+    // notificationServices.requestNotificationPermission();
   }
 
   startTimer() async {

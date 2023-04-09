@@ -12,6 +12,7 @@ class Booking(models.Model):
     start_time = models.TimeField(auto_now=False, auto_now_add=False, null=True)
     end_time = models.TimeField(auto_now=False, auto_now_add=False)
     booking_status = models.BooleanField(default=False)
+    requirement = models.TextField(null=True, blank=True)
     
 
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/manage_profile.dart';
 import 'package:http/http.dart';
 
@@ -20,17 +21,17 @@ class _ChangePWState extends State<ChangePW> {
   TextEditingController _newpw = TextEditingController();
   TextEditingController _repw = TextEditingController();
 
+  CallApi obj = CallApi();
   @override
   Widget build(BuildContext context) {
     _changePw() async {
       try {
-        Response _pw = await put(
-            Uri.parse("http://10.0.2.2:8000/api/change-password/"),
-            body: {
-              'id': widget.id.toString(),
-              'password': _newpw.text.toString(),
-              'repassword': _repw.text.toString(),
-            });
+        Response _pw =
+            await put(Uri.parse(obj.url + "/api/change-password/"), body: {
+          'id': widget.id.toString(),
+          'password': _newpw.text.toString(),
+          'repassword': _repw.text.toString(),
+        });
         var msg = jsonDecode(_pw.body.toString());
 
         if (_pw.statusCode == 200) {

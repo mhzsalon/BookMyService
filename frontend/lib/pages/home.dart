@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/home_page_components/Category.dart';
 import 'package:frontend/pages/home_page_components/Offers.dart';
 import 'package:frontend/pages/home_page_components/trending.dart';
@@ -10,9 +11,10 @@ import 'dart:convert';
 import 'package:frontend/pages/sp_profile.dart';
 
 class HomePage extends StatefulWidget {
+  var uID;
   var userType;
   var name;
-  HomePage({super.key, this.userType, this.name});
+  HomePage({super.key, this.userType, this.name, this.uID});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -21,11 +23,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var mapData = [];
   var length;
+  CallApi obj = CallApi();
 
   fetchSp(String params) async {
     try {
       Response response = await get(
-        Uri.parse("http://10.0.2.2:8000/api/service_provider/?service=$params"),
+        Uri.parse(obj.url + "api/service_provider/?service=$params"),
       );
       var spDetail = jsonDecode(response.body.toString());
 
@@ -59,7 +62,11 @@ class _HomePageState extends State<HomePage> {
               top(),
               type == "Clients" ? search() : Text("Welcome Service Provider"),
               type == "Clients" ? OfferSlider() : Container(),
-              type == "Clients" ? Categories() : Container(),
+              type == "Clients"
+                  ? Categories(
+                      uID: widget.uID,
+                    )
+                  : Container(),
               type == "Clients" ? TrendingSP() : Container(),
             ],
           ),
@@ -81,41 +88,26 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 const CircleAvatar(
                   radius: 22,
-                  backgroundImage: AssetImage("images/default-profile.png"),
+                  backgroundColor: Colors.orangeAccent,
+                  child: CircleAvatar(
+                    radius: 19,
+                    backgroundImage: AssetImage("images/default-profile.png"),
+                  ),
                 ),
                 const SizedBox(
-                  width: 10,
+                  width: 8,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      user_name,
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
-                      ),
+                Container(
+                  margin: EdgeInsets.only(top: 6),
+                  child: Text(
+                    user_name,
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.7,
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "Edit",
-                          style: TextStyle(
-                            color: Color(0xffF2861E),
-                            fontSize: 14,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        Icon(
-                          Icons.edit,
-                          color: Color(0xffF2861E),
-                          size: 15,
-                        )
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),

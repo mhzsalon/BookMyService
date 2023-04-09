@@ -10,43 +10,45 @@
     </div>
             <div class="main-section">
 
-                <div id="addButton">
+                {% comment %} <div id="addButton">
                     <button class="add" onclick="openform()">
                       <i class="fas fa-add"></i>
                       <span>Add user</span>
                     </button>
-                </div>
+                </div> {% endcomment %}
                 
 
                 <div class="header_fixed", id="table">
                     <table>
                         <thead>
                             <tr>
+                                <th>Booking id</th>
                                 <th>Sp id</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Service Type</th>
+                                <th>User</th>
+                                <th>Service date</th>
+                                <th>Booking date</th>
+                                <th>location</th>
                                 <th>Price</th>
-                                <th>Booking Count</th>
-                                <th>Success</th>
-                                <th>Active Status</th>
-                                <th>Action</th>
+                                <th>Start time</th>
+                                <th>End time</th>
+                                {% comment %} <th>Active Status</th>
+                                <th>Action</th> {% endcomment %}
                             </tr>
                         </thead>
                         <tbody>
-                            {% for sp in spData  %}
+                            {% for detail in booking_detail  %}
                             <tr>
-                                <td>{{sp.id}}</td>
-                                <td>{{sp.service_provider.name}}</td>
-                                <td>{{sp.service_provider.email}}</td>
-                                <td>{{sp.service_provider.phone}}</td>
-                                <td>{{sp.service}}</td>
-                                <td>{{sp.price}}</td>
-                                <td>{{sp.booking_count}}</td>
-                                <td>{{sp.success}}</td>
-                                <td>{{sp.active_status}}</td>
-                                <td><button> Delete</button></td>
+                                <td>{{detail.id}}</td>
+                                <td>{{detail.serviceProvider_id.service_provider.name}}</td>
+                                <td>{{detail.user_id.name}}</td>
+                                <td>{{detail.serviceDate}}</td>
+                                <td>{{detail.bookingDate}}</td>
+                                <td>{{detail.location}}</td>
+                                <td>{{detail.price}}</td>
+                                <td>{{detail.start_time}}</td>
+                                <td>{{detail.end_time}}</td>
+                                {% comment %} <td>{{sp.active_status}}</td>
+                                <td><button> Delete</button></td> {% endcomment %}
                             </tr>
                             {% endfor %}
                             

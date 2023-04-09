@@ -5,10 +5,20 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class aboutSection extends StatefulWidget {
+  var uID;
+  var spID;
   var email;
   var location;
   var phone;
-  aboutSection({super.key, this.email, this.location, this.phone});
+  var price;
+  aboutSection(
+      {super.key,
+      this.email,
+      this.location,
+      this.phone,
+      this.uID,
+      this.spID,
+      this.price});
 
   @override
   State<aboutSection> createState() => _aboutSectionState();
@@ -155,8 +165,14 @@ class _aboutSectionState extends State<aboutSection> {
             child: FloatingActionButton.extended(
               onPressed: () {
                 // Add your onPressed code here!
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => BookingScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BookingScreen(
+                              uID: widget.uID,
+                              spID: widget.spID,
+                              price: widget.price,
+                            )));
               },
               label: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),

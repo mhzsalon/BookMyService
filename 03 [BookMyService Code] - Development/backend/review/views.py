@@ -11,7 +11,7 @@ class Review(APIView):
     def get(self, request):
         try:
             print(request.query_params.get('spID'))
-            _spID = feedback.objects.filter(user_id=request.query_params.get('spID'))
+            _spID = feedback.objects.filter(provider_id=request.query_params.get('spID'))
 
 
             # print(timeSince)

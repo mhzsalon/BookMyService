@@ -7,15 +7,19 @@ import 'package:http/http.dart';
 import 'package:tab_container/tab_container.dart';
 
 class SP_profile extends StatefulWidget {
+  var uID;
   var id;
   var service;
   var spName;
   var email;
   var contact;
   var location;
+  var price;
 
   SP_profile(
       {super.key,
+      this.price,
+      this.uID,
       this.id,
       this.service,
       this.contact,
@@ -151,8 +155,14 @@ class _SP_profileState extends State<SP_profile> {
                             email: widget.email,
                             phone: widget.contact,
                             location: widget.location,
+                            uID: widget.uID,
+                            spID: widget.id,
+                            price: widget.price,
                           )
-                        : reviewSection(id: widget.id)),
+                        : reviewSection(
+                            id: widget.id,
+                            uID: widget.uID,
+                          )),
               ],
             ),
           ),

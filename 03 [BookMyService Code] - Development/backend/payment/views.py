@@ -7,27 +7,30 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 # Create your views here.
-class Payment(APIView):
-    permission_classes= [IsAuthenticated]
+class servicePayment(APIView):
+    # permission_classes= [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         
         try:
             b_id = request.data['booking_id']
+            uID = request.data['uID']
             payment_type = request.data['payment_mode']
+            amt =  request.data['amount']
             paid= True
 
             if payment_type == 'Cash':
                 paid = False
 
             Payment(
-                user_id=request.user,
-                booking_id= b_id,
+                user_id_id=uID,
+                booking_id_id= b_id,
                 payment_mode = payment_type,
                 is_paid = paid,
-                amount = request.data['amount']
+                amount = amt
                 ).save()
                 
             return Response({'message': 'Payment Successfull'},status=status.HTTP_200_OK)
-        except:
+        except Exception as e:
+            print(e)
             return Response({'message': 'Error'},status=status.HTTP_400_BAD_REQUEST)

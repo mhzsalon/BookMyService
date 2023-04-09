@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/SpList.dart';
 import 'package:frontend/pages/registration_forms/service_provider.dart';
 import 'package:frontend/pages/sp_profile.dart';
@@ -8,7 +9,8 @@ import 'package:http/http.dart';
 import 'dart:convert';
 
 class Categories extends StatefulWidget {
-  const Categories({super.key});
+  var uID;
+  Categories({super.key, this.uID});
 
   @override
   State<Categories> createState() => _CategoriesState();
@@ -18,10 +20,12 @@ class _CategoriesState extends State<Categories> {
   final PageController controller = PageController();
   var mapData;
 
+  CallApi obj = CallApi();
+
   fetchSp(String params) async {
     try {
       Response response = await get(
-        Uri.parse("http://10.0.2.2:8000/api/service_provider/?service=$params"),
+        Uri.parse(obj.url + "/api/service_provider/?service=$params"),
       );
       var spDetail = jsonDecode(response.body.toString());
 
@@ -81,6 +85,9 @@ class _CategoriesState extends State<Categories> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         SP_profile(
+                                                          price: mapData[index]
+                                                              ['price'],
+                                                          uID: widget.uID,
                                                           id: mapData[index]
                                                               ['id'],
                                                           spName: mapData[index]
@@ -316,7 +323,7 @@ class _CategoriesState extends State<Categories> {
                         },
                         child: Container(
                           margin:
-                              EdgeInsets.only(right: 27, top: 15, bottom: 5),
+                              EdgeInsets.only(right: 22, top: 15, bottom: 5),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

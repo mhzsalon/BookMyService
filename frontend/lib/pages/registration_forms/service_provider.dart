@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/login/login.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -24,11 +25,12 @@ class _ServiceProviderState extends State<ServiceProvider> {
   TextEditingController _priceController = new TextEditingController();
 
   bool passVerified = true;
+  CallApi obj = CallApi();
 
   spRegistration() async {
     try {
       Response response = await post(
-        Uri.parse("http://10.0.2.2:8000/api/register/"),
+        Uri.parse(obj.url + "/api/register/"),
         body: {
           'email': _spEmailController.text.toString(),
           'password': _spPasswordController.text.toString(),

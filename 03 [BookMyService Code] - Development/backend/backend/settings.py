@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-dh8$@&5(=wcv_xss9v$6cj5j8mt0rexy1tax)1w(y##o$-vo@!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1']
+ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1','b277-2400-1a00-b010-60a2-8431-c635-958b-e231.in.ngrok.io']
 
 
 # Application definition
@@ -143,6 +143,9 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = BASE_DIR / 'static/images'
+
+# MEDIA_URL="/media/"
+# MEDIA_ROOT=os.path.join(BASE_DIR,"media/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

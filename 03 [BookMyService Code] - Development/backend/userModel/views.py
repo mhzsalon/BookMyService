@@ -156,14 +156,14 @@ def delete(request):
 
 class activateUser(APIView):
     def get(self, request):
-        activate = ServiceProvider.objects.get(service_provider__email=request.query_params.get('email'))
+        activate = ServiceProvider.objects.get(service_provider=request.query_params.get('id'))
         serializer = StatusSerializer(activate, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self,request):
         try:
             # uID = request.user
-            activate = ServiceProvider.objects.get(service_provider__email=request.query_params.get('email'))
+            activate = ServiceProvider.objects.get(service_provider=request.query_params.get('id'))
             print(activate)
             activate.active_status=True
             activate.save()
@@ -180,7 +180,7 @@ class deactivateUser(APIView):
     def put(self,request):
         try:
             # uID = request.user
-            activate = ServiceProvider.objects.get(service_provider__email=request.query_params.get('email'))
+            activate = ServiceProvider.objects.get(service_provider=request.query_params.get('id'))
             print(activate)
             activate.active_status=False
             activate.save()
@@ -233,12 +233,57 @@ class updateUser(APIView):
 
     def get(self, request, *args, **kwargs):
         userData = CustomUser.objects.get(id=request.query_params.get('id'))
-        if userData.user_type == 'Service Provider':
-            spData= ServiceProvider.objects.get(service_provider=request.query_params.get('id'))
-            serializer = SpSerializer(spData, many=False)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        else:
-            serializer = UserSerializer(userData, many=False)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = UserSerializer(userData, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
+
+class updateSP(APIView):
+    def put(self, request, *args, **kwargs):
+        try:
+            user_detail = CustomUser.objects.get(id=request.query_params.get('id'))
+            if request.data['name'] is not None and request.data['name'] != '':
+                user_detail.name = request.data['name']
+            if request.data['email'] is not None and request.data['email'] != '':
+                user_detail.email = request.data['email']
+            if request.data['phone'] is not None and request.data['phone'] != '':
+                user_detail.phone = request.data['phone']
+            if request.data['location'] is not None and request.data['location'] != '':
+                user_detail.location = request.data['location']
+            user_detail.save()
+
+            sp_detail = ServiceProvider.objects.get(service_provider=request.query_params.get('id'))
+            if request.data['service'] is not None and request.data['service'] != '':
+                sp_detail.service = request.data['service']
+            if request.data['description'] is not None and request.data['description'] != '':
+                sp_detail.description = request.data['description']
+            sp_detail.save()
+
+            return Response({"message": "The details has been updated!" }, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({
+                "message": "Error!",
+            },
+                status=status.HTTP_400_BAD_REQUEST, )
+
+    def get(self, request, *args, **kwargs):
+       
+        spData= ServiceProvider.objects.get(service_provider=request.query_params.get('id'))
+        serializer = SpSerializer(spData, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+class avatar(APIView):
+        def put(self, request, *args, **kwargs):
+            getAvatar = request.data['avatar']
+            uID = request.data['uID']
+
+            userAvatar = CustomUser.objects.get(id==uID)
+            userAvatar.avatar = getAvatar
+            userAvatar.save()
+            return Response({'message':'image changed'}, status=status.HTTP_200_OK)
+
+
+class PriceFilter(APIView):
+    def get(self, request):
+        des_Price = ServiceProvider.objects.order_by('-price')
+        asc_Price = ServiceProvider.objects.order_by('price')

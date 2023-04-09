@@ -2,14 +2,16 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:http/http.dart';
 
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:intl/intl.dart';
 
 class reviewSection extends StatefulWidget {
+  var uID;
   var id;
-  reviewSection({super.key, this.id});
+  reviewSection({super.key, this.id, this.uID});
 
   @override
   State<reviewSection> createState() => _reviewSectionState();
@@ -20,22 +22,48 @@ class _reviewSectionState extends State<reviewSection> {
   var length;
   var date;
   var timeAgo;
-  getFeedback(int id) async {
-    Response _response = await get(
-      Uri.parse("http://10.0.2.2:8000/feedback/review/?spID=$id"),
-    );
-    var feedback = jsonDecode(_response.body.toString());
+  CallApi obj = CallApi();
 
-    if (_response.statusCode == 200) {
-      setState(() {
-        _data = feedback;
-        length = _data.length;
-        date = DateFormat("HH:mm:ss").format(_data['created']);
-        timeAgo = DateTime.now().subtract(Duration(days: date));
-      });
+  TextEditingController comment = TextEditingController();
+
+  getFeedback(int id) async {
+    try {
+      Response _response = await get(
+        Uri.parse(obj.url + "/feedback/review/?spID=$id"),
+      );
+      var feedback = jsonDecode(_response.body.toString());
+
+      if (_response.statusCode == 200) {
+        setState(() {
+          _data = feedback;
+          length = _data.length;
+          // date = DateFormat("HH:mm:ss").format(_data['created']);
+          // timeAgo = DateTime.now().subtract(Duration(days: date));
+        });
+      }
+      print(feedback);
+    } catch (e) {
+      return e;
     }
-    print(feedback);
-    // feedback['created'];
+  }
+
+  postFeedback(int id, int uID) async {
+    try {
+      print("pressed11");
+
+      Response res = await post(
+        Uri.parse(obj.url + "/feedback/review/"),
+        body: {'uID': uID, 'pID': id, 'comment': comment.text.toString()},
+      );
+
+      // if (_response.statusCode == 200) {
+      //   print("called");
+      //   Navigator.pushReplacement(context,
+      //       MaterialPageRoute(builder: (BuildContext context) => this.widget));
+      // }
+    } catch (e) {
+      return e;
+    }
   }
 
   @override
@@ -119,9 +147,10 @@ class _reviewSectionState extends State<reviewSection> {
                           ),
                           Container(
                             width: 400,
-                            child: Text(
+                            child: const Text(
                               // _data!=null?DateTime.now().subtract(Duration()):,
-                              _data != null ? timeAgo : '20 min ago',
+                              // _data != null ? timeAgo :
+                              '5 min ago',
                               style: TextStyle(
                                 color: Colors.black38,
                                 fontWeight: FontWeight.w500,
@@ -131,7 +160,7 @@ class _reviewSectionState extends State<reviewSection> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          Divider(
+                          const Divider(
                             color: Color.fromARGB(30, 0, 0, 0),
                             thickness: 2,
                           ),
@@ -148,9 +177,12 @@ class _reviewSectionState extends State<reviewSection> {
             margin: EdgeInsets.only(left: 15, right: 15, top: 20),
             alignment: Alignment.center,
             child: TextField(
+              controller: comment,
               decoration: InputDecoration(
                   suffixIcon: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      postFeedback(widget.id, widget.uID);
+                    },
                     icon: Icon(
                       Icons.send,
                       color: Color(0xffF2861E),

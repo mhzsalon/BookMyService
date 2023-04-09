@@ -1,4 +1,7 @@
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/MyBookings.dart';
 import 'package:frontend/pages/home.dart';
 import 'package:frontend/pages/notification.dart';
@@ -18,6 +21,33 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   int _currentIndex = 0;
+  String? pushtoken;
+
+  // void getToken() async {
+  //   await FirebaseMessaging.instance.getToken().then((tkn) {
+  //     setState(() {
+  //       pushtoken = tkn;
+  //     });
+
+  //     saveToken(tkn!);
+  //   });
+  // }
+
+  // void saveToken(String token) async {
+  //   await FirebaseFirestore.instance
+  //       .collection("UserTokens")
+  //       .doc("user@gmail.com")
+  //       .set({
+  //     'token': token,
+  //   });
+  // }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // getToken();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +56,7 @@ class _LandingPageState extends State<LandingPage> {
       HomePage(
         userType: widget.userAccess,
         name: widget.name,
+        uID: widget.id,
       ),
       MyBooking(),
       Profile(

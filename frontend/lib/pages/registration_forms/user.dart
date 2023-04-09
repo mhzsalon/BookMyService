@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/confirm_booking.dart';
 import 'package:frontend/pages/login/login.dart';
 import 'package:frontend/pages/notification.dart';
@@ -27,10 +28,12 @@ class _UserState extends State<User> {
   TextEditingController _phoneController = new TextEditingController();
   TextEditingController _userController = new TextEditingController();
 
+  CallApi obj = CallApi();
+
   userRegistration() async {
     try {
       Response response = await post(
-        Uri.parse("http://10.0.2.2:8000/api/register/"),
+        Uri.parse(obj.url + "/api/register/"),
         body: {
           'email': _emailController.text.toString(),
           'password': _passwordController.text.toString(),

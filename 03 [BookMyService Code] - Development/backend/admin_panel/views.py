@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import CustomUserForm, ServiceProviderForm
 from django.contrib.auth. models import auth
 from django.contrib.auth.decorators import login_required
+from booking.models import Booking
 
 
 def loginPage(request):
@@ -127,5 +128,16 @@ def deleteUser(request, pk):
       
     uid.delete()
     return redirect('user/')    
+
+def getBooking(request):
+    booking_detail=Booking.objects.all()
+    print(booking_detail)
+    context = {
+               'booking_detail': booking_detail,
+         
+               'title': 'Booking Details'
+               }
+    return render(request, 'booking.html', context)
+
 
 

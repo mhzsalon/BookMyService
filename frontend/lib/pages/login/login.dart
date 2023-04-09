@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/API/CallAPI.dart';
+import 'package:frontend/notification_services.dart';
 import 'package:frontend/pages/home.dart';
 import 'package:frontend/pages/landing_page.dart';
 import 'package:frontend/pages/register.dart';
@@ -21,11 +22,14 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool _isEmpty = false;
+  CallApi obj = CallApi();
+
+  NotificationServices notificationServices = NotificationServices();
 
   fetchData() async {
     try {
       Response response = await post(
-        Uri.parse("http://10.0.2.2:8000/api/login/"),
+        Uri.parse(obj.url + "/api/login/"),
         body: {
           'email': emailController.text.toString(),
           'password': passwordController.text.toString(),
@@ -58,6 +62,12 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit(context);
+    notificationServices.interactMessage(context);
+    notificationServices.getDeviceToken().then((value) {
+      print("token: $value");
+    });
   }
 
   @override
