@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return KhaltiScope(
       publicKey: 'test_public_key_23811b40badb44a8a1122e318e0f1ad5',
+      enabledDebugging: true,
       builder: (context, navkey) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,

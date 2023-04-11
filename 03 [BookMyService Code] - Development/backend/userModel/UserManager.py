@@ -20,33 +20,9 @@ class CustomUserManager(BaseUserManager):
         
         user.set_password(password)
         user.is_active= True
-
-
-        # user.name = name
-        # user.phone = phone
-        # user.gender = gender
-        # user.location = location
-        # user.user_type = 6
-
         user.save(using = self._db)        
         return user
     
-    # def create_staff(self, email, password=None, user_type=None):
-    #     if not email:
-    #         raise ValueError(_('Email Not Found'))
-
-    #     staff = self.model(
-    #         email=self.normalize_email(email),
-    #     )
-        
-    #     staff.set_password(password)
-    #     staff.user_type = user_type
-    #     staff.is_staff = True
-    #     staff.save(using=self._db)
-    #     return staff
-    
-     
-
     def create_superuser(self, email, name, password, phone, location, gender):
 
         user = self.create_user(
@@ -63,33 +39,7 @@ class CustomUserManager(BaseUserManager):
         user.is_staff = True
         user.is_verified = True
         user.save(using=self._db)
-
-        # # return user
-        # extra_fields.setdefault('user_type', 1)
-        # # extra_fields.setdefault('is_superuser', True)
-        # extra_fields.setdefault('is_active', True)
-
-        # if extra_fields.get('user_type') != 1:
-        #     raise ValueError(_('Superuser must have is_staff = True.'))
-        
-        # # if extra_fields.get('is_superuser') is not True:
-        # #     raise ValueError(_('Superuser must have is_superuser = True.'))
-
         return user
-    
-    # def create_sp(self, email, password=None, user_type=None):
-    #     if not email:
-    #         raise ValueError(_('Email Not Found'))
-
-    #     company = self.model(
-    #         email=self.normalize_email(email),
-    #     )
-
-    #     company.set_password(password)
-    #     company.user_type = 2
-    #     company.save(using=self._db)
-    #     return company
-    
 
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)

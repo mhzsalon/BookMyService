@@ -11,8 +11,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     users = [('Admin', 'Admin'), ('Service Provider', 'Service Provider'), ('Clients', 'Clients')]
 
     name = models.CharField(max_length=20)
-    gender = models.CharField('Gender', max_length=20,
-                              choices=selections, default='Male', null=True)
+    gender = models.CharField('Gender', max_length=20,choices=selections, default='Male', null=True)
     phone = PhoneNumberField(
         _("phone_number"), unique=True, null=False, blank=False)
     email = models.EmailField(unique=True, max_length=200)
@@ -20,17 +19,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     avatar = models.ImageField(null=True, blank=True, default='', upload_to='user/images')
-
-
-    user_type = models.CharField('User Type', max_length=20,
-                              choices=users, default='Clients', null=False)
-
-    # class UserType(models.IntegerChoices):
-    #     ADMIN = 1, _('Admin')
-    #     SERVICE_PROVIDER = 2, _('Service Provider')        
-    #     USER = 3, _('Client')
-
-    # user_type = models.IntegerField(choices=UserType.choices, blank=True, null=True)
+    user_type = models.CharField('User Type', max_length=20, choices=users, default='Clients', null=False)
     
     # Setting email as username and required fields.
     USERNAME_FIELD = 'email'

@@ -22,6 +22,22 @@ class _CategoriesState extends State<Categories> {
 
   CallApi obj = CallApi();
 
+  filter(String option, String service) async {
+    try {
+      Response filter_res = await get(
+        Uri.parse(obj.url + "/api/filter/?filter=$option&service=$service"),
+      );
+      if (filter_res.statusCode == 200) {
+        setState(() {
+          var filterData = jsonDecode(filter_res.body.toString());
+          mapData = filterData;
+        });
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   fetchSp(String params) async {
     try {
       Response response = await get(
@@ -33,7 +49,6 @@ class _CategoriesState extends State<Categories> {
         setState(() {
           mapData = spDetail;
         });
-
         print(mapData);
 
         Navigator.push(
@@ -67,187 +82,295 @@ class _CategoriesState extends State<Categories> {
                         )
                       : Container(
                           margin: EdgeInsets.only(left: 25, right: 25, top: 20),
-                          child: SingleChildScrollView(
-                            child: Container(
-                              child: ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: mapData.length,
-                                  itemBuilder: (context, index) {
-                                    if (mapData[index]['active_status'] ==
-                                        true) {
-                                      return Container(
-                                        margin: EdgeInsets.only(bottom: 10),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SP_profile(
-                                                          price: mapData[index]
-                                                              ['price'],
-                                                          uID: widget.uID,
-                                                          id: mapData[index]
-                                                              ['id'],
-                                                          spName: mapData[index]
-                                                                  [
-                                                                  'service_provider']
-                                                              ['name'],
-                                                          email: mapData[index][
-                                                                  'service_provider']
-                                                              ['email'],
-                                                          contact: mapData[
-                                                                      index][
-                                                                  'service_provider']
-                                                              ['phone'],
-                                                          location: mapData[
-                                                                      index][
-                                                                  'service_provider']
-                                                              ['location'],
-                                                          service:
-                                                              mapData[index]
-                                                                  ['service'],
-                                                        )));
-                                            // builder: (context) => CandidateProfile()));
-                                          },
-                                          child: Row(
-                                            children: [
-                                              // Image section
-                                              Container(
-                                                width: 90,
-                                                height: 90,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(20),
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    20)),
-                                                    color: Colors.white38,
-                                                    image: DecorationImage(
-                                                        fit: BoxFit.cover,
-                                                        image: AssetImage(
-                                                            "images/default-profile.png"))),
-                                              ),
-                                              // Text section
-                                              Expanded(
-                                                child: Container(
-                                                  height: 90,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topRight: Radius
-                                                                .circular(20),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    20)),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 15,
-                                                        left: 15,
-                                                        right: 10,
-                                                        bottom: 10),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(left: 5, bottom: 20),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Sort by:",
+                                      style: TextStyle(
+                                        color: Colors.black38,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Container(
+                                      padding:
+                                          EdgeInsets.only(left: 5, right: 5),
+                                      child: OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(25)),
+                                            primary: Colors.orange,
+                                            backgroundColor: Color.fromRGBO(
+                                                255, 172, 64, 0.204),
+                                            side: BorderSide(
+                                                width: 0.5,
+                                                color: Colors.orangeAccent),
+                                            minimumSize: Size(80, 30)),
+                                        onPressed: () {
+                                          var filteredServices = mapData
+                                              .where((service) =>
+                                                  service['service'] ==
+                                                  'Cleaner')
+                                              .toList();
+
+                                          filteredServices.sort((a, b) =>
+                                              b['price'].compareTo(a['price']));
+                                          filteredServices.forEach(
+                                              (service) => print(service));
+                                          // filter("asce", params);
+                                          // Navigator.pushReplacement(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder:
+                                          //             (BuildContext context) =>
+                                          //                 this.widget));
+                                        },
+                                        child: Text(
+                                          "low price",
+                                          style: TextStyle(
+                                              // fontWeight: FontWeight.bold,
+                                              fontSize: 12),
+                                        ),
+                                      ),
+                                      // child: OutlinedButton(
+                                      //   style: ,
+                                      // ),
+                                    ),
+                                    Container(
+                                      padding:
+                                          EdgeInsets.only(left: 5, right: 5),
+                                      child: OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(25)),
+                                            primary: Colors.orange,
+                                            backgroundColor: Color.fromRGBO(
+                                                255, 172, 64, 0.204),
+                                            side: BorderSide(
+                                                width: 0.5,
+                                                color: Colors.orangeAccent),
+                                            minimumSize: Size(90, 30)),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          "high price",
+                                          style: TextStyle(
+                                              // fontWeight: FontWeight.bold,
+                                              fontSize: 12),
+                                        ),
+                                      ),
+                                      // child: OutlinedButton(
+                                      //   style: ,
+                                      // ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SingleChildScrollView(
+                                child: Container(
+                                  child: ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: mapData.length,
+                                      itemBuilder: (context, index) {
+                                        if (mapData[index]['active_status'] ==
+                                            true) {
+                                          return Container(
+                                            margin: EdgeInsets.only(bottom: 10),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SP_profile(
+                                                              price:
                                                                   mapData[index]
-                                                                          [
-                                                                          'service_provider']
-                                                                      ['name'],
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .black54,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontSize:
-                                                                        14,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                    height: 10),
-                                                                Text(
-                                                                  mapData[index]
+                                                                      ['price'],
+                                                              uID: widget.uID,
+                                                              id: mapData[index]
+                                                                  ['id'],
+                                                              spName: mapData[
+                                                                          index]
                                                                       [
-                                                                      'service'],
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .black38,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontSize:
-                                                                        12,
-                                                                  ),
-                                                                ),
-                                                              ]),
+                                                                      'service_provider']
+                                                                  ['name'],
+                                                              email: mapData[
+                                                                          index]
+                                                                      [
+                                                                      'service_provider']
+                                                                  ['email'],
+                                                              contact: mapData[
+                                                                          index]
+                                                                      [
+                                                                      'service_provider']
+                                                                  ['phone'],
+                                                              location: mapData[
+                                                                          index]
+                                                                      [
+                                                                      'service_provider']
+                                                                  ['location'],
+                                                              service: mapData[
+                                                                      index]
+                                                                  ['service'],
+                                                            )));
+                                                // builder: (context) => CandidateProfile()));
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  // Image section
+                                                  Container(
+                                                    width: 90,
+                                                    height: 90,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        20),
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        20)),
+                                                        color: Colors.white38,
+                                                        image: DecorationImage(
+                                                            fit: BoxFit.cover,
+                                                            image: AssetImage(
+                                                                "images/default-profile.png"))),
+                                                  ),
+                                                  // Text section
+                                                  Expanded(
+                                                    child: Container(
+                                                      height: 90,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        20),
+                                                                bottomRight: Radius
+                                                                    .circular(
+                                                                        20)),
+                                                        color: Colors.white,
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 15,
+                                                                left: 15,
+                                                                right: 10,
+                                                                bottom: 10),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Text(
+                                                                      mapData[index]
+                                                                              [
+                                                                              'service_provider']
+                                                                          [
+                                                                          'name'],
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .black54,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontSize:
+                                                                            14,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            10),
+                                                                    Text(
+                                                                      mapData[index]
+                                                                          [
+                                                                          'service'],
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .black38,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontSize:
+                                                                            12,
+                                                                      ),
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                            Container(
+                                                                margin: EdgeInsets
+                                                                    .only(
+                                                                        top: 35,
+                                                                        right:
+                                                                            10),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .center,
+                                                                  children: const [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      size: 18,
+                                                                      color: Colors
+                                                                          .yellow,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 5,
+                                                                    ),
+                                                                    Text(
+                                                                      "4.5",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .black26,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontSize:
+                                                                            12,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ))
+                                                          ],
                                                         ),
-                                                        Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 35,
-                                                                    right: 10),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center,
-                                                              children: const [
-                                                                Icon(
-                                                                  Icons.star,
-                                                                  size: 18,
-                                                                  color: Colors
-                                                                      .yellow,
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 5,
-                                                                ),
-                                                                Text(
-                                                                  "4.5",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .black26,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontSize:
-                                                                        12,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ))
-                                                      ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return Container();
-                                    }
-                                  }),
-                            ),
+                                            ),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }),
+                                ),
+                              ),
+                            ],
                           ),
                         ));
             },
@@ -320,6 +443,15 @@ class _CategoriesState extends State<Categories> {
                       return GestureDetector(
                         onTap: () {
                           fetchSp(_service[index]);
+                          // print(mapData);
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => SpList(
+                          //               service: _service[index].toString(),
+                          //               uID: widget.uID.toString(),
+                          //               mapData: mapData,
+                          //             )));
                         },
                         child: Container(
                           margin:

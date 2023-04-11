@@ -285,5 +285,17 @@ class avatar(APIView):
 
 class PriceFilter(APIView):
     def get(self, request):
-        des_Price = ServiceProvider.objects.order_by('-price')
-        asc_Price = ServiceProvider.objects.order_by('price')
+        ser = request.query_params.get('service')
+        print(request.query_params.get('service'))
+
+        if request.query_params.get('filter')=='desc':
+            des_Price = ServiceProvider.objects.order_by('-price')
+            print(des_Price)
+
+            serializer= SpSerializer(des_Price, many= True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            asc_Price = ServiceProvider.objects.filter(ser).order_by('price')
+
+            serializer= SpSerializer(asc_Price, many= True)
+            return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import  UserLogin, UserRegistration, getSP, logout, delete, activateUser, deactivateUser, changePw, updateUser, updateSP, avatar
+from .views import  UserLogin, UserRegistration, getSP, logout, delete, activateUser, deactivateUser, changePw, updateUser, updateSP, avatar, PriceFilter
 
 urlpatterns = [
     path('login/', UserLogin.as_view(), name='user_login'),
@@ -19,6 +19,8 @@ urlpatterns = [
 
 
     path('service_provider/', getSP.as_view(), name='get_service_provider'),
+    path('filter/', PriceFilter.as_view(), name='fitler'),
+
 
     
 ]

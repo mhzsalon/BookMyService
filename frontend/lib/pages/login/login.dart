@@ -35,10 +35,16 @@ class _LoginPageState extends State<LoginPage> {
           'password': passwordController.text.toString(),
         },
       );
-      var loginDetail = jsonDecode(response.body.toString());
-      print(loginDetail);
+      print(response.statusCode);
+
+      print('10');
+
+      print(jsonDecode(jsonEncode(response.body.toString())));
+      print('11');
 
       if (response.statusCode == 200) {
+        var loginDetail = jsonDecode(response.body.toString());
+        print(loginDetail);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -48,10 +54,6 @@ class _LoginPageState extends State<LoginPage> {
                       name: loginDetail['name'],
                       id: loginDetail['id'],
                     )));
-      } else {
-        print(
-          loginDetail["message"],
-        );
       }
     } catch (e) {
       print("Error is $e");

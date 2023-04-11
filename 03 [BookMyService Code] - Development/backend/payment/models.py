@@ -6,7 +6,6 @@ from userModel.models import CustomUser
 class Payment(models.Model):
     types = [('Cash', 'cash'), ('Online', 'online')]
 
-
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     booking_id = models.ForeignKey(Booking, on_delete=models.CASCADE)
     payment_date = models.DateField(auto_now_add=True)

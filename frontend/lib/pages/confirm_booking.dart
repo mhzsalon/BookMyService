@@ -430,31 +430,9 @@ class _confirmBookingState extends State<confirmBooking> {
                   backgroundColor: Color(0xffF2861E),
                   minimumSize: Size(280, 55)),
               onPressed: () {
-                // _paymentType == PaymentType.Online_payment
-                //     ? payWithKhaltiInApp()
-                _notificationServices.getDeviceToken().then((value) async {
-                  print('callde');
-                  var data = {
-                    'to':
-                        'dhWzsSmRRJmuXi3Nurk2Yt:APA91bHnz1LHlFsTu9TMheOAdoZCei6_zfWtV6zCCQyGfLLB8tdkBiK9V_49DgBMONehiYYYqq5C3sy8x9fGIwXxcNWUvGfhOAfK9YcRPi7MHGpkeWkfndCfIvY2jH83O0_AzI0UxSQ1',
-                    'priority': 'high',
-                    'notification': {
-                      'title': 'Booking',
-                      'body': 'Your booking is successfull.',
-                    },
-                    'data': {
-                      'type': 'msg',
-                      'id': bID.toString(),
-                    }
-                  };
-                  await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
-                      body: jsonEncode(data),
-                      headers: {
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Authorization':
-                            'key=AAAAngiBwRQ:APA91bHYgQPSdbM_itfVe1Bl-mmMkZVywXRZJS8e1kvwgmhC8zQGM-glbCYOwHfQKSu8CcJbW0NFOoBmlLK34SIIsYDHzWIEpUNiD5n7GN8QluydWC87WFZ7B4Mzz1AYY49Zg_xE2Fke',
-                      });
-                });
+                _paymentType == PaymentType.Online_payment
+                    ? payWithKhaltiInApp()
+                    : addPaymentDetail(widget.uID.toString(), "Cash");
               },
               child: Text(
                 "Confirm Booking",
@@ -470,7 +448,7 @@ class _confirmBookingState extends State<confirmBooking> {
   payWithKhaltiInApp() {
     KhaltiScope.of(context).pay(
       config: PaymentConfig(
-          amount: 1000, productIdentity: "Service", productName: "Service"),
+          amount: 1000, productIdentity: "Service", productName: "ServiceType"),
       preferences: [
         PaymentPreference.khalti,
       ],
