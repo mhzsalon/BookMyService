@@ -43,15 +43,11 @@ class UserLogin(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response({"message": "User doesnot exist", }, status=status.HTTP_400_BAD_REQUEST)
-            
-            # return Response({"message": "Login Successful", }, status=status.HTTP_200_OK)
-
         except:
             return Response({"message": "Email or password doesn't match!", }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserRegistration(APIView):
-    
     def post(self, request, *args, **kwargs):
         phone =  request.data['phone']
         email= request.data['email']
@@ -60,19 +56,6 @@ class UserRegistration(APIView):
         location= request.data['location']
         gender = request.data['gender']
         user_type= request.data['user_type']
-
-        print(password)
-        print(request.data['user_type'])
-
-        # user_type = request.data['user_type']
-
-        # print(user_type)
-        # if user_type=='2':
-        #             print("hello Service)))))))))))))))0")  
-        # print(request.data['service'])
-        # ser = Service.objects.get(service_id = request.data['service'])
-        # print(ser)
-
 
         try:
             if CustomUser.objects.filter(email=email).exists():
@@ -111,12 +94,8 @@ class UserRegistration(APIView):
                         price = request.data['price'],
                     )
                      
-                #  UserActivation.post(request, user, email)
                 serialzer= UserSerializer(user, many=False)
                 print(serialzer.data)
-
-            # refresh = tokenGenerator(user)
-            
             
             return Response("User created", status=status.HTTP_200_OK)    
            
@@ -128,22 +107,17 @@ class UserRegistration(APIView):
 class getSP(APIView):
     def get(self,request):
         try:
-            # print(request.query_params.get('service'))
             sp_details = ServiceProvider.objects.filter(service=request.query_params.get('service'))
-            # sp_details = ServiceProvider.objects.all()
-
-
             print(request.query_params.get('service'))
            
-
             serializer = SpSerializer(sp_details, many=True)
             print(serializer.data)
-
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
             return Response({'message': 'Error!'}, status=status.HTTP_404_NOT_FOUND)
+        
 
 def delete(request):
         try:
@@ -285,17 +259,18 @@ class avatar(APIView):
 
 class PriceFilter(APIView):
     def get(self, request):
-        ser = request.query_params.get('service')
-        print(request.query_params.get('service'))
 
         if request.query_params.get('filter')=='desc':
-            des_Price = ServiceProvider.objects.order_by('-price')
-            print(des_Price)
+            des_Price = ServiceProvider.objects.filter(service=request.query_params.get('service'))
 
-            serializer= SpSerializer(des_Price, many= True)
+            filterD=des_Price.order_by('-price')
+
+            serializer= SpSerializer(filterD, many= True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            asc_Price = ServiceProvider.objects.filter(ser).order_by('price')
+            asc_Price = ServiceProvider.objects.filter(service=request.query_params.get('service'))
 
-            serializer= SpSerializer(asc_Price, many= True)
+            filterD=asc_Price.order_by('price')
+
+            serializer= SpSerializer(filterD, many= True)
             return Response(serializer.data, status=status.HTTP_200_OK)

@@ -15,4 +15,6 @@ class Booking(models.Model):
     requirement = models.TextField(null=True, blank=True)
     
 
+    def __str__(self):
+        return self.user_id.name + self.serviceProvider_id.service_provider.name
 

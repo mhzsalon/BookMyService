@@ -13,3 +13,6 @@ class Payment(models.Model):
                               choices=types, default='Cash', null=True)
     is_paid = models.BooleanField(default=False)
     amount = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.user_id.name

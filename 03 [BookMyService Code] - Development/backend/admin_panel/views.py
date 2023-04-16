@@ -39,11 +39,14 @@ def loginPage(request):
 def dashboard(request):
     userCount = CustomUser.objects.filter(user_type='Clients').count()
     spCount = CustomUser.objects.filter(user_type='Service Provider').count()
+    bkCount = Booking.objects.all().count()
+
 
     response = {
         'userCount': userCount,
         'spCount': spCount,
-               'title': 'Dashboard'
+               'title': 'Dashboard',
+               'bkCount': bkCount,
 
     }
 

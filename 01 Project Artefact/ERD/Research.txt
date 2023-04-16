@@ -1,5 +1,0 @@
-links:
-
-https://www.techtarget.com/searchdatamanagement/definition/entity-relationship-diagram-ERD#:~:text=An%20entity%20relationship%20diagram%20(ERD,information%20technology%20(IT)%20system.
-
-https://www.lucidchart.com/pages/er-diagrams

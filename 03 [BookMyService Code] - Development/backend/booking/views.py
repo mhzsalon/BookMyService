@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import render
 from rest_framework.decorators import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -5,14 +6,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Booking
 from userModel.models import ServiceProvider, CustomUser
-from .serializer import BookingSerializer
+from .serializer import BookingSerializer, BookingHistorySerializer
+from payment.models import Payment
+from payment.serializer import PaymentSerializer
 
 # # Create your views here.
 class BookService(APIView):
     # permission_classes = (IsAuthenticated,)
     def get(self,request):
         bID = Booking.objects.latest('id')
-
         serailizer = BookingSerializer(bID, many=False)
 
         return Response(serailizer.data, status=status.HTTP_200_OK)
@@ -35,8 +37,6 @@ class BookService(APIView):
                     start_time=startTime,
                     end_time=endTime,
                 )
-            
-            print(conflicting_bookings)
             
             if conflicting_bookings.exists():
                 return Response({'message': 'This service provider is already booked at the given time.'}, status=status.HTTP_306_RESERVED)
@@ -62,4 +62,30 @@ class BookService(APIView):
             return Response({'message': 'Your room has been booked successfully'}, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
+            return Response({'message': 'Something went wrong!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class BookingHistory(APIView):
+    def get(self, request):
+        try:
+            if request.query_params.get('user') == "Clients":
+                b_details = Booking.objects.filter(user_id= request.query_params.get('uid'))
+                serailizer = BookingHistorySerializer(b_details, many=True)
+                p_detail = Payment.objects.filter(user_id=request.query_params.get('uid'))
+            
+                pSerializer = PaymentSerializer(p_detail, many=True)
+
+                response = {
+                    'booking': serailizer.data,
+                    'payment': pSerializer.data
+            }
+                return Response(response, status=status.HTTP_200_OK)
+            else:         
+                b_details = Booking.objects.filter(serviceProvider_id= request.query_params.get('sp'))
+                serailizer = BookingHistorySerializer(b_details, many=True)
+                return Response(serailizer.data, status=status.HTTP_200_OK)
+
+
+        except Exception as e:
+            print (e)
             return Response({'message': 'Something went wrong!'}, status=status.HTTP_400_BAD_REQUEST)

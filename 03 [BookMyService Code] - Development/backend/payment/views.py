@@ -5,10 +5,16 @@ from rest_framework import status
 from rest_framework.decorators import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from userModel.serializer import SpSerializer, ServiceProvider
 
 # Create your views here.
 class servicePayment(APIView):
     # permission_classes= [IsAuthenticated]
+    def get(self, request):
+        spID = ServiceProvider.objects.get(service_provider= request.query_params.get('id'))
+
+        serial = SpSerializer(spID, many=False)
+        return Response(serial.data,status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         

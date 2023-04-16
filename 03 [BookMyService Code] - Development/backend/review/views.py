@@ -10,15 +10,10 @@ from .serializer import FeedbackSerializer
 class Review(APIView):
     def get(self, request):
         try:
-            print(request.query_params.get('spID'))
             _spID = feedback.objects.filter(provider_id=request.query_params.get('spID'))
 
-
-            # print(timeSince)
             serialiler = FeedbackSerializer(_spID, many=True)
-            # created_time = serialiler.data['created']
-            # print(created_time|timesince)
-
+         
             return Response(serialiler.data, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
