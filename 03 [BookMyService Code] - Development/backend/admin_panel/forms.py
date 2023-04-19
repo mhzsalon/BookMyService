@@ -11,3 +11,4 @@ class ServiceProviderForm(ModelForm):
     class Meta:
         model =ServiceProvider
         fields = ['service', 'price']
+        

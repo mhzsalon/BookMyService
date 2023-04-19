@@ -22,13 +22,15 @@ class Review(APIView):
     
     def post(self, request, *args, **kwargs):
         try:
+            print(request.data['uID'])
             feedback(
                 user_id_id= request.data['uID'],
                 provider_id_id = request.data['pID'],
                 comment = request.data['comment'],
             ).save()
             return Response({'message': 'Thank you for the feedback.'}, status=status.HTTP_200_OK)
-        except:
+        except Exception as e:
+            print(e)
             return Response({'message': 'Error.'}, status=status.HTTP_400_BAD_REQUEST)
 
 

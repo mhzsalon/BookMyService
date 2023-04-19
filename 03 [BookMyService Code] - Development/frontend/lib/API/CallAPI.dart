@@ -8,5 +8,5 @@ import 'package:flutter/src/widgets/container.dart';
 
 class CallApi {
   final String url =
-      "https://71a2-2400-1a00-b010-be0f-c836-1fa7-689b-dcb4.in.ngrok.io";
+      "https://e539-2400-1a00-b010-a46c-fca6-d47e-5d04-473b.in.ngrok.io";
 }

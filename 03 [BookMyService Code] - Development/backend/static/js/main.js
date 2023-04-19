@@ -10,3 +10,4 @@ function openform() {
     document.getElementById("addButton").style.display="inline";
     document.getElementById("table").style.display="inline";
   }
+

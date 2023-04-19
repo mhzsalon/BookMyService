@@ -1,5 +1,6 @@
 {% extends 'main.html' %}
 {% block content%}
+
 <section class="main">
   <div class="main-top">
       <h1>{{title}}</h1>
@@ -112,6 +113,17 @@
                               </div>
                             </section>
                           </section>
+                          {% if messages %}
+<div class="alert">
+    {% for message in messages %}
+    <span class="fas fa-exclamation-triangle"></span>
+    <span class="msg">Error: {{ message }}</span>
+    <div class="close-btn">
+        <span class="fas fa-times"></span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock content%}
   
 

@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/API/CallAPI.dart';
 import 'package:frontend/pages/sp_profile.dart';
+import 'package:http/http.dart';
 
 class TrendingSP extends StatefulWidget {
   const TrendingSP({super.key});
@@ -9,6 +14,30 @@ class TrendingSP extends StatefulWidget {
 }
 
 class _TrendingSPState extends State<TrendingSP> {
+  CallApi obj = CallApi();
+
+  var spData;
+  var length;
+  randomSP() async {
+    int num = Random().nextInt(2) + 1;
+    Response response = await get(
+      Uri.parse("${obj.url}/api/home-screen/?page=$num"),
+    );
+
+    var sp = jsonDecode(response.body.toString());
+    setState(() {
+      spData = sp;
+      length = spData.length;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    randomSP();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,7 +54,7 @@ class _TrendingSPState extends State<TrendingSP> {
             ),
             alignment: Alignment.centerLeft,
             child: Text(
-              "Trending Service Providers",
+              "Service Providers",
               style: TextStyle(
                 color: Colors.black54,
                 fontWeight: FontWeight.bold,
@@ -39,7 +68,7 @@ class _TrendingSPState extends State<TrendingSP> {
                 child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: 7,
+                    itemCount: 3,
                     itemBuilder: (context, index) {
                       return Container(
                         margin: EdgeInsets.only(bottom: 10),
@@ -91,7 +120,7 @@ class _TrendingSPState extends State<TrendingSP> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  "Mark Tatum",
+                                                  "Mark",
                                                   style: TextStyle(
                                                     color: Colors.black54,
                                                     fontWeight: FontWeight.bold,

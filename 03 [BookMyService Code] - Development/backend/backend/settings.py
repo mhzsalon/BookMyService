@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-dh8$@&5(=wcv_xss9v$6cj5j8mt0rexy1tax)1w(y##o$-vo@!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1','71a2-2400-1a00-b010-be0f-c836-1fa7-689b-dcb4.in.ngrok.io']
+ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1','e539-2400-1a00-b010-a46c-fca6-d47e-5d04-473b.in.ngrok.io']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'booking',
     'payment',
     'review',
+    # 'oauth2_provider',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +60,12 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
-    ]
+    ],
+    #   'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    # ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE':3,
 }
 
 ROOT_URLCONF = 'backend.urls'

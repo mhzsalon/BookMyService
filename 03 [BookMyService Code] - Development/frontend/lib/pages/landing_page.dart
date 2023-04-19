@@ -17,8 +17,15 @@ class LandingPage extends StatefulWidget {
   var userAccess;
   var email;
   var name;
+  var avatar;
 
-  LandingPage({super.key, this.userAccess, this.email, this.name, this.id});
+  LandingPage(
+      {super.key,
+      this.userAccess,
+      this.email,
+      this.name,
+      this.id,
+      this.avatar});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -34,6 +41,7 @@ class _LandingPageState extends State<LandingPage> {
         userType: widget.userAccess,
         name: widget.name,
         uID: widget.id,
+        avatar: widget.avatar,
       ),
       MyBooking(
         uID: widget.id,
@@ -44,6 +52,7 @@ class _LandingPageState extends State<LandingPage> {
         name: widget.name,
         type: widget.userAccess,
         id: widget.id,
+        avatar: widget.avatar,
       ),
     ];
     return Scaffold(

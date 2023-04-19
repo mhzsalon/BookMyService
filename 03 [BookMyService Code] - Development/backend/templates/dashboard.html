@@ -1,8 +1,5 @@
-
 {% extends 'main.html' %}
-
     {% block content %}
-
     <section class="main">
         <div class="main-top">
             <h1>Dashboard</h1>
@@ -26,15 +23,17 @@
             <span>Bookings</span>
         </div>
 
-        <div class="card">
-            <h3>145</h3>
-            <span>Bookings</span>
-        </div>
     </div>
     <section class="main-bottom">
         <div class="graph-section">
-            <div class="box"></div>
-            <div class="box"></div>
+            <div class="box">
+                <canvas id="piechart"></canvas>
+
+            </div>
+            <div class="box">
+                <canvas id="myChart"></canvas>
+
+            </div>
 
         </div>
     </section>

@@ -4,7 +4,7 @@ from .models import CustomUser, ServiceProvider
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'name', 'email', 'phone', 'location', 'gender', 'user_type']
+        fields = ['id', 'name', 'email', 'phone', 'location', 'gender', 'user_type', 'avatar']
 
 
 
@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id','user_type', 'email', 'name']
+        fields = ['id','user_type', 'email', 'name','avatar']
         
 
 class SpSerializer(serializers.ModelSerializer):

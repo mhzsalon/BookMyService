@@ -420,17 +420,68 @@ form .field input[type="submit"]:hover{
   opacity: 0.8;
 }
 
-.error{
-  margin-top: 5px;
-  color: #f23535;
-  font-size: 18px;
-  text-decoration: none;
+
+
+
+.alert{
+  background:  #ee9c9c;
+  padding:  20px 40px;
+  min-width: 420px;
+  position: absolute;
+  right: 0px;
+  top: 10px;
+  border-radius: 4px;
+  border-left: 8px solid #f23535;
+  overflow: hidden;
 }
 
-.error .pop-message{
-  margin-top: 5px;
-  color: #f23535;
-  font-size: 18px;
-  text-decoration: none;
+.alert.show{
+  animation: show_silde 1s ease forwards;
 }
 
+@keyframes show_slide {
+  0%{
+    transform: translateX(100%);
+  }
+  40%{
+    transform: translateX(-10%);
+  }
+  80%{
+    transform: translateX(0%);
+  }
+ 100%{
+    transform: translateX(-10px);
+  }
+}
+
+.alert .fa-exclamation-triangle{
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform:  translateY(-50%);
+  color: #ce0a00;
+  font-size:  26px;
+}
+
+.alert .msg{
+  padding: 0px 20px;
+  font-size: 18px;
+  color: #ce0a00;
+}
+
+.alert .close-btn{
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  /* background: #ec6f6f; */
+  padding: 20px 18px;
+  transform: translateY(-50%
+  );
+  cursor: pointer;
+}
+
+.close-btn .fa-times{
+  color: #ef2929;
+  font-size: 24px;
+  line-height: 40px;
+}

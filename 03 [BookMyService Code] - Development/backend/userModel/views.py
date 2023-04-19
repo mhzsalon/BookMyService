@@ -2,10 +2,11 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUser, ServiceProvider
+from rest_framework.generics import ListAPIView
 
 from rest_framework.decorators import APIView
 from .serializer import UserSerializer, LoginSerializer, SpSerializer, StatusSerializer
@@ -248,13 +249,22 @@ class updateSP(APIView):
         
 class avatar(APIView):
         def put(self, request, *args, **kwargs):
-            getAvatar = request.data['avatar']
-            uID = request.data['uID']
+            try:
+                getAvatar = request.data['avatar']
+                uID = request.data['uID']
+                
+                print(uID)
+                print(getAvatar)
 
-            userAvatar = CustomUser.objects.get(id==uID)
-            userAvatar.avatar = getAvatar
-            userAvatar.save()
-            return Response({'message':'image changed'}, status=status.HTTP_200_OK)
+                userAvatar = CustomUser.objects.get(id=uID)
+                userAvatar.avatar = getAvatar
+                userAvatar.save()
+
+                serializer = LoginSerializer(userAvatar, many=False)
+                print(serializer.data,)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                print(e)
 
 
 class PriceFilter(APIView):
@@ -274,3 +284,8 @@ class PriceFilter(APIView):
 
             serializer= SpSerializer(filterD, many= True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class HomeScreenAPI(ListAPIView):
+    queryset = ServiceProvider.objects.all()
+    serializer_class = SpSerializer
+    pagination_class = PageNumberPagination

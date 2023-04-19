@@ -39,6 +39,7 @@ class _PreviousBookingsState extends State<PreviousBookings> {
         setState(() {
           bookingData = details;
           length = bookingData.length;
+          print(length);
         });
       }
     } catch (e) {

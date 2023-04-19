@@ -1,0 +1,46 @@
+{% extends 'main.html' %}
+{% block content%}
+<section class="main">
+    <div class="main-top">
+        <h1>{{title}}</h1>
+        <div class="user-option">
+            <i class="fas fa-circle-user"></i>
+            <span>{{user.name}}</span>
+        </div>
+    </div>
+            <div class="main-section">
+                <div class="header_fixed", id="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Payment id</th>
+                                <th>Booking id</th>
+                                <th>User</th>
+                                <th>Payment type</th>
+                                <th>Payment date</th>
+                                <th>Amount</th>
+                                <th>Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detail in payment  %}
+                            <tr>
+                                <td>{{detail.id}}</td>
+                                <td>{{detail.booking_id.id}}</td>
+                                <td>{{detail.user_id}}</td>
+                                <td>{{detail.payment_mode}}</td>
+                                <td>{{detail.payment_date}}</td>
+                                <td>{{detail.amount}}</td>
+                                <td>{{detail.is_paid}}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+                            </section>
+                        </section>
+{% endblock content%}
+  
+

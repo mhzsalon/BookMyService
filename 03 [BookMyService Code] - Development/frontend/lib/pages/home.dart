@@ -14,7 +14,8 @@ class HomePage extends StatefulWidget {
   var uID;
   var userType;
   var name;
-  HomePage({super.key, this.userType, this.name, this.uID});
+  var avatar;
+  HomePage({super.key, this.userType, this.name, this.uID, this.avatar});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   fetchSp(String params) async {
     try {
       Response response = await get(
-        Uri.parse(obj.url + "api/service_provider/?service=$params"),
+        Uri.parse("${obj.url}api/service_provider/?service=$params"),
       );
       var spDetail = jsonDecode(response.body.toString());
 
@@ -79,6 +80,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget top() {
     String user_name = widget.name;
+    String imageURL = widget.avatar.toString();
 
     return Container(
       margin: const EdgeInsets.only(top: 30, left: 25, right: 25),
@@ -88,14 +90,24 @@ class _HomePageState extends State<HomePage> {
             flex: 3,
             child: Row(
               children: <Widget>[
-                const CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.orangeAccent,
-                  child: CircleAvatar(
-                    radius: 19,
-                    backgroundImage: AssetImage("images/default-profile.png"),
-                  ),
-                ),
+                imageURL != null
+                    ? CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.orangeAccent,
+                        child: CircleAvatar(
+                          radius: 19,
+                          backgroundImage: NetworkImage("${obj.url}$imageURL"),
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.orangeAccent,
+                        child: CircleAvatar(
+                          radius: 19,
+                          backgroundImage:
+                              AssetImage("images/default-profile.png"),
+                        ),
+                      ),
                 const SizedBox(
                   width: 8,
                 ),

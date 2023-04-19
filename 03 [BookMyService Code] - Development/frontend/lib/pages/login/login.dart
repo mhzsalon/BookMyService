@@ -47,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                       email: loginDetail['email'],
                       name: loginDetail['name'],
                       id: loginDetail['id'],
+                      avatar: loginDetail['avatar'],
                     )));
       } else {
         const cancelsnackBar = SnackBar(
