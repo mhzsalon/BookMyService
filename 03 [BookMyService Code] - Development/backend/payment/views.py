@@ -17,11 +17,12 @@ class servicePayment(APIView):
         return Response(serial.data,status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        
         try:
-            b_id = request.data['booking_id']
-            uID = request.data['uID']
-            payment_type = request.data['payment_mode']
+            b_id = str(request.data['booking_id'])
+            uID = str(request.data['uID'])
+            payment_type = str(request.data['payment_mode'])
+            print(request.data['amount'])
+
             amt =  request.data['amount']
             paid= True
 
@@ -40,3 +41,18 @@ class servicePayment(APIView):
         except Exception as e:
             print(e)
             return Response({'message': 'Error'},status=status.HTTP_400_BAD_REQUEST)
+        
+    def put(self, request, *args, **kwargs):
+        try:
+            bID = request.query_params.get('id')
+
+            cashPayment=Payment.objects.get(booking_id= bID)
+            cashPayment.is_paid=True
+            cashPayment.save()
+
+            return Response({'message': 'Payment Successfull'},status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({'message': 'Error'},status=status.HTTP_400_BAD_REQUEST)
+
+        

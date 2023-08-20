@@ -12,7 +12,7 @@ class Payment(models.Model):
     payment_mode = models.CharField('Payemnt mode', max_length=20,
                               choices=types, default='Cash', null=True)
     is_paid = models.BooleanField(default=False)
-    amount = models.IntegerField(null=True, blank=True)
+    amount = models.FloatField(default=0)
 
     def __str__(self):
         return self.user_id.name

@@ -109,7 +109,7 @@
 
 
     new Chart(pie, {
-        type: 'polarArea',
+        type: 'pie',
         data: {
           labels: ['February', 'March', 'April'],
           datasets: [{
@@ -134,11 +134,11 @@
 new Chart(ctx, {
 type: 'bar',
 data: {
-  labels: ['Baby Sitter', 'Cleaner', 'Carpenter', 'Elderly Care', 'Electrician', 'Plumber', 'Painter'],
+  labels: ['Cleaner', 'Painter', 'Carpenter', 'Elderly Care', 'Electrician', 'Plumber', 'Babysitter'],
   datasets: [{
     label: 'Service Providers',
 
-    data: [0, 2, 1, 0, 1, 0, 1],
+    data: [{{cleanerCount}}, {{painterCount}},{{carpenterCount}},{{elderlyCount}}, {{electricianCount}}, {{lpumberCount}}, {{babysitterCount}}],
 backgroundColor: [
   'rgba(255, 99, 132, 0.5)',
   'rgba(255, 159, 64, 0.5)',

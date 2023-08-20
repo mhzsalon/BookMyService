@@ -18,7 +18,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     location = models.CharField(max_length=30, null=True, blank=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    avatar = models.ImageField(null=True, blank=True, default='', upload_to='images')
+    avatar = models.ImageField(null=True, blank=True, default='images/default-profile.png', upload_to='images')
     user_type = models.CharField('User Type', max_length=20, choices=users, default='Clients', null=False)
     
     # Setting email as username and required fields.

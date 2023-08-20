@@ -1,14 +1,20 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:frontend/API/CallAPI.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+
+import 'package:frontend/Services/CallAPI.dart';
 
 class EditUser extends StatefulWidget {
   var id;
   var type;
-  EditUser({super.key, this.id, this.type});
+  EditUser({
+    Key? key,
+    required this.id,
+    required this.type,
+  }) : super(key: key);
 
   @override
   State<EditUser> createState() => _EditUserState();

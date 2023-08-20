@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/notification_services.dart';
-import 'package:frontend/pages/login/login.dart';
+import 'package:frontend/screens/auth/login/login.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => SplashScreenState();
 }
@@ -16,19 +16,19 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-   
+
     startTimer();
     // notificationServices.requestNotificationPermission();
   }
 
   startTimer() async {
-    var duration = Duration(seconds: 3);
-    return new Timer(duration, loginRoute);
+    var duration = const Duration(seconds: 3);
+    return Timer(duration, loginRoute);
   }
 
   loginRoute() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
+        context, MaterialPageRoute(builder: (context) => const LoginPage()));
   }
 
   @override

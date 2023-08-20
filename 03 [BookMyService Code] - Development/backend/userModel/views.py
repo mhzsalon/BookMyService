@@ -15,13 +15,13 @@ from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 class UserLogin(APIView):
     def get(self, request):
-        userDetail = CustomUser.objects.all()
-        serializer = UserSerializer(userDetail, many=True)
+        userDetail = ServiceProvider.objects.all()
+        # serializer = UserSerializer(userDetail, many=True)
+        serializer = SpSerializer(userDetail, many=True)
         return Response(serializer.data)
     
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
-            print("working")
             email = request.data['email']
             password = request.data['password']
             
@@ -29,7 +29,7 @@ class UserLogin(APIView):
             print(email)
             print(password)
             user = authenticate(
-                username=email, 
+                username=email,  
                 password=password
                 )
             print(user)
@@ -39,9 +39,13 @@ class UserLogin(APIView):
                 print("login")
 
                 userDetail = CustomUser.objects.get(email=email)
-                serializer = LoginSerializer(userDetail, many=False)
-            
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                user_type = userDetail.user_type
+
+                if user_type == 'Clients':
+                    serializer = UserSerializer(userDetail, many=False)
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    serializer = ServiceProvider(userDetail, many=False)
             else:
                 return Response({"message": "User doesnot exist", }, status=status.HTTP_400_BAD_REQUEST)
         except:
@@ -235,7 +239,6 @@ class updateSP(APIView):
 
             return Response({"message": "The details has been updated!" }, status=status.HTTP_200_OK)
         except Exception as e:
-            print(e)
             return Response({
                 "message": "Error!",
             },
@@ -277,13 +280,28 @@ class PriceFilter(APIView):
 
             serializer= SpSerializer(filterD, many= True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
+        
+        elif request.query_params.get('filter')=='asce':
             asc_Price = ServiceProvider.objects.filter(service=request.query_params.get('service'))
 
             filterD=asc_Price.order_by('price')
-
+            
             serializer= SpSerializer(filterD, many= True)
+            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        elif request.query_params.get('filter')=='most': 
+            mostSP = ServiceProvider.objects.filter(service=request.query_params.get('service'))
+
+            filtered=mostSP.order_by('-booking_count')
+
+            serializer= SpSerializer(filtered, many= True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+
     
 class HomeScreenAPI(ListAPIView):
     queryset = ServiceProvider.objects.all()

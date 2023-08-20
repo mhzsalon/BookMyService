@@ -10,6 +10,9 @@ from .serializer import BookingSerializer, BookingHistorySerializer
 from payment.models import Payment
 from payment.serializer import PaymentSerializer
 
+import datetime
+from dateutil import parser, tz
+
 # # Create your views here.
 class BookService(APIView):
     # permission_classes = (IsAuthenticated,)
@@ -50,7 +53,7 @@ class BookService(APIView):
                 start_time = request.data['start_time'],
                 end_time = request.data['end_time'],
                 booking_status = True,
-                requirement=request.data['requirements']
+                requirement=request.data['requirements'],
                 # ServiceProvider_id_booking_count =+1
             ).save()
 
@@ -59,7 +62,7 @@ class BookService(APIView):
             count.save()
 
 
-            return Response({'message': 'Your room has been booked successfully'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Your service has been booked successfully'}, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
             return Response({'message': 'Something went wrong!'}, status=status.HTTP_400_BAD_REQUEST)
@@ -68,22 +71,57 @@ class BookService(APIView):
 class BookingHistory(APIView):
     def get(self, request):
         try:
+            data = []
+            pData = []
+            p_detail = Payment.objects.all()
+            pSerializer = PaymentSerializer(p_detail, many=True)
+            pData = pSerializer.data
+            
+                
             if request.query_params.get('user') == "Clients":
                 b_details = Booking.objects.filter(user_id= request.query_params.get('uid'))
                 serailizer = BookingHistorySerializer(b_details, many=True)
-                p_detail = Payment.objects.filter(user_id=request.query_params.get('uid'))
-            
-                pSerializer = PaymentSerializer(p_detail, many=True)
+                data = serailizer.data
 
-                response = {
-                    'booking': serailizer.data,
-                    'payment': pSerializer.data
-            }
-                return Response(response, status=status.HTTP_200_OK)
-            else:         
+            else:    
                 b_details = Booking.objects.filter(serviceProvider_id= request.query_params.get('sp'))
                 serailizer = BookingHistorySerializer(b_details, many=True)
-                return Response(serailizer.data, status=status.HTTP_200_OK)
+                data = serailizer.data
+                # return Response(serailizer.data, status=status.HTTP_200_OK)
+            
+            previous = []
+            # payment = []
+            current_time = datetime.datetime.now(datetime.timezone.utc)
+            for booking in data:
+                # Parse the service date and end time
+                service_date = parser.isoparse(booking["serviceDate"]).date()
+                end_time = datetime.datetime.strptime(booking["end_time"], "%H:%M:%S").time()
+
+                # Combine the service date and end time into a datetime object
+                service_end_datetime = datetime.datetime.combine(service_date, end_time)
+
+                # Convert the service end datetime to an offset-aware datetime in UTC
+                service_end_datetime_utc = datetime.datetime.combine(service_date, end_time, tzinfo=tz.UTC)
+
+                # Check if the service end datetime in UTC is in the past compared to the current time
+                if request.query_params.get('time') == "previous":
+
+                    if service_end_datetime_utc < current_time:
+                        previous.append(booking)
+                else:
+                     if service_end_datetime_utc > current_time:
+                        previous.append(booking)
+                        # for p in pData:
+                        #     if p['booking_id'] == booking['id']:
+                        #         payment.append(p)
+                
+            response = {
+                'booking': previous,
+                'payment':pData
+            }
+            return Response(response, status=status.HTTP_200_OK)
+
+
 
 
         except Exception as e:

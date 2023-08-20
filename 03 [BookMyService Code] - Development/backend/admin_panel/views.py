@@ -45,13 +45,28 @@ def dashboard(request):
     spCount = CustomUser.objects.filter(user_type='Service Provider').count()
     bkCount = Booking.objects.all().count()
 
+    cleanerCount = ServiceProvider.objects.filter(service='Cleaner').count()
+    carpenterCount = ServiceProvider.objects.filter(service='Carpenter').count()
+    babysitterCpunt = ServiceProvider.objects.filter(service='Babysitter').count()
+
+    electricianCount = ServiceProvider.objects.filter(service='Electrician').count()
+
+    plumberCount = ServiceProvider.objects.filter(service='Plumber').count()
+    painterCount = ServiceProvider.objects.filter(service='Painter').count()
+    elderlyCount = ServiceProvider.objects.filter(service='Elderly Care').count()
 
     response = {
         'userCount': userCount,
         'spCount': spCount,
-               'title': 'Dashboard',
-               'bkCount': bkCount,
-
+        'title': 'Dashboard',
+        'bkCount': bkCount,
+        'cleanerCount': cleanerCount,
+        'carpenterCount': carpenterCount,
+        'babysitterCount': babysitterCpunt,
+        'electricianCount':electricianCount,
+        'plumberCount':plumberCount,
+        'painterCount':painterCount,
+        'elderlyCount':elderlyCount,
     }
 
     return render(request, 'dashboard.html', response)
@@ -98,51 +113,74 @@ def addUser(request):
 
 @login_required(login_url='/')
 def addSp(request):
-    form = CustomUserForm
-    sp_form = ServiceProviderForm
+    # form = CustomUserForm
+    # sp_form = ServiceProviderForm
+    # new_sp = None  # Initialize new_sp variable
 
     if request.method == 'POST':
         pw = request.POST['password']
         confirm_pw = request.POST['confirm_password']
+        service = request.POST['service']
+        price = request.POST['price']
+        email = request.POST['email']
+        name = request.POST['name']
+        phone = request.POST['phone']
+        location = request.POST['location']
+
+       
+        user_type = 'Service Provider'
+        print(request.POST['gender'])
+        gender = request.POST['gender']
+        
+
         if pw == confirm_pw:
-            form = CustomUserForm(request.POST)
-            sp_form = ServiceProviderForm(request.POST)
+            user = CustomUser.objects.create_user(
+                        email= email,
+                        password= pw,
+                        name= name,
+                        gender = gender,
+                        phone =  phone,
+                        user_type= user_type,
+                        location=""
+                    )  
+            sp_id =CustomUser.objects.latest("id")
+            
 
-            if form.is_valid():
-                user_instance=form.save(commit=False)
-                user_instance.user_type = 'Service Provider'
-                user_instance.password = pw
-                user_instance.is_active=True
-                user_instance.save()
-
-                new_sp = ServiceProvider.objects.latest('id')
-                print(new_sp)
-
-            if sp_form.is_valid():
-                instance = sp_form.save(commit=False)
-                instance.service_provider = new_sp.id
-                instance.save()
-            return redirect('../service-provider')
+            ServiceProvider.objects.create(
+                service = service ,
+                service_provider = sp_id,
+                price = price,
+            )
+            return redirect('../service-provider/') 
+           
         else:
             messages.info(request, 'Your password does not match.')
 
     userData = CustomUser.objects.filter(user_type='Service Provider')
     spData = ServiceProvider.objects.all()
-   
+
     context = {
-               'form': form,
-               'sp_form': sp_form,
-               'userData': userData,
-               'spData': spData,
-               'title': 'Service Providers'
-               }
+        # 'form': form,
+        # 'sp_form': sp_form,
+        'userData': userData,
+        'spData': spData,
+        'title': 'Service Providers'
+    }
     return render(request, 'service_provider.html', context)
+
 
 @login_required(login_url='/')
 def deleteUser(request, pk):
     uid = CustomUser.objects.get(id=pk)
     uid.delete()
-    return redirect('user/')    
+    return redirect('../../user') 
+
+@login_required(login_url='/')
+def deleteSP(request, pk):
+ 
+    uid = CustomUser.objects.get(id=pk)
+    uid.delete()
+    return redirect('../../service-provider')    
 
 @login_required(login_url='/')
 def getBooking(request):

@@ -21,6 +21,7 @@ urlpatterns = [
     path('service_provider/', getSP.as_view(), name='get_service_provider'),
     path('filter/', PriceFilter.as_view(), name='fitler'),
 
+
     path('home-screen/', HomeScreenAPI.as_view(), name='home-screen'),
 
 
