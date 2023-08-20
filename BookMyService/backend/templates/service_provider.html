@@ -1,0 +1,149 @@
+{% extends 'main.html' %}
+{% block content%}
+<section class="main">
+    <div class="main-top">
+        <h1>{{title}}</h1>
+        <div class="user-option">
+            <i class="fas fa-circle-user"></i>
+            <span>{{user.name}}</span>
+        </div>
+    </div>
+            <div class="main-section">
+
+                <div id="addButton">
+                    <button class="add" onclick="openform()">
+                      <i class="fas fa-add"></i>
+                      <span>Add user</span>
+                    </button>
+                </div>
+                
+
+                <div class="header_fixed", id="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sp id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Service Type</th>
+                                <th>Price</th>
+                                <th>Active Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sp in spData  %}
+                            <tr>
+                                <td>{{sp.id}}</td>
+                                <td>{{sp.service_provider.name}}</td>
+                                <td>{{sp.service_provider.email}}</td>
+                                <td>{{sp.service_provider.phone}}</td>
+                                <td>{{sp.service}}</td>
+                                <td>{{sp.price}}</td>
+                                {% comment %} <td>{{sp.booking_count}}</td> {% endcomment %}
+                                {% comment %} <td>{{sp.success}}</td> {% endcomment %}
+                                <td>{{sp.active_status}}</td>
+                                <td><form action="{% url 'delete-sp' sp.service_provider.id %}" method="post">
+                                  {% csrf_token %}
+
+                                  <input type="submit" value="Delete">
+                                </form></td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+                            <div id="add-form">
+  <form method="POST">
+    {% csrf_token %}
+    
+    <div class="add-field">
+        <label for="name">Name</label>
+        <div class="field">
+          <input type="text" name="name" placeholder="Full name" required />
+        </div>  
+      </div>
+      
+      <div class="add-field">
+        <label for="email">Email</label>
+        <div class="field">
+          <input type="email" name="email" placeholder="Email Address" required />
+
+        </div>
+      </div>
+      <div class="add-field">
+        <label for="phone">Phone number</label>
+        <div class="field">
+          <input type="text" name="phone" placeholder="Phone number" required />
+
+        </div>
+      </div>
+      <div class="add-field">
+        <label for="phone">location</label>
+        <div class="field">
+          <input type="text" name="location" placeholder="location" required />
+
+        </div>
+      </div>
+
+
+      <div class="add-field">
+        <label for="gender">Gender</label>
+        <select name="gender" required>
+          <option value="Female">Male</option>
+          <option value="Male">Female</option>
+          <option value="Other">other</option>
+        </select>
+      </div>
+
+      <div class="add-field">
+        <label for="Service type">Service type</label>
+        <select name="service" required>
+          <option value="Cleaner">Cleaner</option>
+          <option value="Carpenter">Carpenter</option>
+          <option value="Baby">other</option>
+          
+        </select>
+        <!-- {{sp_form.service}} -->
+      </div>
+
+      <div class="add-field">
+        <label for="Price">Price</label>
+        <div class="field">
+          <input type="text" name="price" placeholder="Price" required />
+
+            <!-- {{sp_form.price}} -->
+            </div>
+      </div>
+
+      <div class="add-field">
+        <label for="price">Password</label>
+        <div class="field">
+            <input type="password" name="password" required />
+        </div>
+      </div>
+      <div class="add-field">
+        <label for="price">Confirm password</label>
+        <div class="field">
+            <input type="password" name="confirm_password" required />
+        </div>
+      </div>
+
+
+      <div class="button">
+        <input type="submit" value="Add" class="add" />
+        <input type="submit" value="Cancel" class="cancel" onclick="closeform()"/>
+      </div>
+  </form>
+
+                                
+                                  
+                              </div>
+                            </section>
+                        </section>
+{% endblock content%}
+  
+

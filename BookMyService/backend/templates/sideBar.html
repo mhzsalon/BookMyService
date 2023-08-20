@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+
+        <nav>
+            <ul>
+                <li class="logo">
+                    <img src="{% static 'images/logo.png' %}">
+                </li>
+
+                <li><a href="{% url 'dashboard'%}">
+                    <i class="fas fa-dashboard"></i>
+                    <span class="nav-item">Dashboard</span>
+                </a></li>
+                <li><a href="{%url 'user'%}">
+                    <i class="fas fa-user"></i>
+                    <span class="nav-item">Users</span>
+                </a></li>
+                <li><a href="{%url 'service-provider'%}">
+                     <i class="fas fa-user"></i>
+                    <span class="nav-item">Service Providers</span>
+                </a></li>
+                <li><a href="{%url 'booking'%}">
+                    <i class="fas fa-list"></i>
+                   <span class="nav-item">Booking</span>
+               </a></li>
+               <li><a href="{%url 'payment-details' %}">
+                <i class="fas fa-credit-card"></i>
+               <span class="nav-item">Payments</span>
+           </a></li>
+           
+
+                <li><a href="{% url 'logout' %}" class="logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-item">Logout</span>
+                </a></li>
+            </ul>
+        </nav>
+
+       
+  

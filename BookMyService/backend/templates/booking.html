@@ -1,0 +1,124 @@
+{% extends 'main.html' %}
+{% block content%}
+<section class="main">
+    <div class="main-top">
+        <h1>{{title}}</h1>
+        <div class="user-option">
+            <i class="fas fa-circle-user"></i>
+            <span>{{user.name}}</span>
+        </div>
+    </div>
+            <div class="main-section">
+                <div class="header_fixed", id="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking id</th>
+                                <th>Sp id</th>
+                                <th>User</th>
+                                <th>Service date</th>
+                                <th>Booking date</th>
+                                <th>location</th>
+                                <th>Price</th>
+                                <th>Start time</th>
+                                <th>End time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detail in booking_detail  %}
+                            <tr>
+                                <td>{{detail.id}}</td>
+                                <td>{{detail.serviceProvider_id.service_provider.name}}</td>
+                                <td>{{detail.user_id.name}}</td>
+                                <td>{{detail.serviceDate}}</td>
+                                <td>{{detail.bookingDate}}</td>
+                                <td>{{detail.location}}</td>
+                                <td>{{detail.price}}</td>
+                                <td>{{detail.start_time}}</td>
+                                <td>{{detail.end_time}}</td>
+                                {% comment %} <td>{{sp.active_status}}</td>
+                                <td><button> Delete</button></td> {% endcomment %}
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+                            <div id="add-form">
+  <form method="POST">
+    {% csrf_token %}
+    
+    <div class="add-field">
+        <label for="name">Name</label>
+        <div class="field">
+            {{form.name}}
+        </div>  
+      </div>
+      
+      <div class="add-field">
+        <label for="email">Email</label>
+        <div class="field">
+            {{form.email}}
+        </div>
+      </div>
+      <div class="add-field">
+        <label for="phone">Phone number</label>
+        <div class="field">
+            {{form.phone}}
+        </div>
+      </div>
+
+
+      <div class="add-field">
+        <label for="gender">Gender</label>
+        {{form.gender}}
+      </div>
+
+      <div class="add-field">
+        <label for="Service type">Service type</label>
+        {{sp_form.service}}
+      </div>
+
+      <div class="add-field">
+        <label for="Price">Price</label>
+        <div class="field">
+            {{sp_form.price}}
+            </div>
+      </div>
+
+      {% comment %} <div class="add-field">
+        <label for="password">Password</label>
+        <div class="field">
+        {{form.password}}
+           
+        </div>
+      </div> {% endcomment %}
+      <div class="add-field">
+        <label for="price">Password</label>
+        <div class="field">
+            <input type="password" name="password" required />
+        </div>
+      </div>
+      <div class="add-field">
+        <label for="price">Confirm password</label>
+        <div class="field">
+            <input type="password" name="confirm_password" required />
+        </div>
+      </div>
+
+
+      <div class="button">
+        <input type="submit" value="Add" class="add" />
+        <input type="submit" value="Cancel" class="cancel" onclick="closeform()"/>
+      </div>
+  </form>
+
+                                
+                                  
+                              </div>
+                            </section>
+                        </section>
+{% endblock content%}
+  
+

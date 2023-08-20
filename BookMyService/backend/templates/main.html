@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{% static 'styles/mystyle.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> 
+
+    <title>BookMyService</title>
+    <style>
+        .header_fixed{
+            height: 500px
+        }
+        .alert{
+            background:  #ee9c9c;
+            padding:  20px 40px;
+            min-width: 420px;
+            position: absolute;
+            right: 0px;
+            top: 10px;
+            border-radius: 4px;
+            border-left: 8px solid #f23535;
+            overflow: hidden;
+          }
+          
+          .alert.show{
+            animation: show_silde 1s ease forwards;
+          }
+          
+          @keyframes show_slide {
+            0%{
+              transform: translateX(100%);
+            }
+            40%{
+              transform: translateX(-10%);
+            }
+            80%{
+              transform: translateX(0%);
+            }
+           100%{
+              transform: translateX(-10px);
+            }
+          }
+          
+          .alert .fa-exclamation-triangle{
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform:  translateY(-50%);
+            color: #ce0a00;
+            font-size:  26px;
+          }
+          
+          .alert .msg{
+            padding: 0px 20px;
+            font-size: 18px;
+            color: #ce0a00;
+          }
+          
+          .alert .close-btn{
+            position: absolute;
+            right: 0px;
+            top: 50%;
+            /* background: #ec6f6f; */
+            padding: 20px 18px;
+            transform: translateY(-50%
+            );
+            cursor: pointer;
+          }
+          
+          .close-btn .fa-times{
+            color: #ef2929;
+            font-size: 24px;
+            line-height: 40px;
+          }
+    </style>
+   
+</head>
+<body>
+    
+
+    <div class="container">
+        
+        {% include 'sideBar.html' %}
+
+ 
+       
+   
+    {% block content %}
+    {% endblock content %}
+
+            
+               
+
+    </div>
+    
+<script src="{% static 'js/main.js' %}"></script>
+   
+<script>
+    const ctx = document.getElementById('myChart');
+    const pie = document.getElementById('piechart');
+
+
+    new Chart(pie, {
+        type: 'pie',
+        data: {
+          labels: ['February', 'March', 'April'],
+          datasets: [{
+            label: 'Bookings',
+    
+            data: [4, 2, 6],
+        backgroundColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(255, 205, 86, 1)',
+         
+        ],
+          }]
+        },
+        options: {
+            responsive: true,
+          
+        }
+      });
+    
+
+new Chart(ctx, {
+type: 'bar',
+data: {
+  labels: ['Cleaner', 'Painter', 'Carpenter', 'Elderly Care', 'Electrician', 'Plumber', 'Babysitter'],
+  datasets: [{
+    label: 'Service Providers',
+
+    data: [{{cleanerCount}}, {{painterCount}},{{carpenterCount}},{{elderlyCount}}, {{electricianCount}}, {{lpumberCount}}, {{babysitterCount}}],
+backgroundColor: [
+  'rgba(255, 99, 132, 0.5)',
+  'rgba(255, 159, 64, 0.5)',
+  'rgba(255, 205, 86, 0.5)',
+  'rgba(75, 192, 192, 0.5)',
+  'rgba(54, 162, 235, 0.5)',
+  'rgba(153, 102, 255, 0.5)',
+  'rgba(201, 203, 207, 0.5)'
+],
+borderColor: [
+'rgb(255, 99, 132)',
+'rgb(255, 159, 64)',
+'rgb(255, 205, 86)',
+'rgb(75, 192, 192)',
+'rgb(54, 162, 235)',
+'rgb(153, 102, 255)',
+'rgb(201, 203, 207)'
+],
+borderWidth: 1
+  }]
+},
+options: {
+  scales: {
+    y: {
+      beginAtZero: true
+    }
+  }
+}
+});
+
+</script>
+</body>
+</html>
